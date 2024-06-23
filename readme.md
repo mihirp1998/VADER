@@ -8,7 +8,9 @@
 [![Website](https://img.shields.io/badge/🌎-Website-blue.svg)](http://vader-vid.github.io)
 </div>
 
-This is the official implementation of our paper [Video Diffusion Alignment via Reward Gradient](https://vader-vid.github.io/) by Mihir Prabhudesai*, Russell Mendonca*, Zheyang Qin*, Katerina Fragkiadaki, Deepak Pathak .
+This is the official implementation of our paper [Video Diffusion Alignment via Reward Gradient](https://vader-vid.github.io/) by 
+
+Mihir Prabhudesai*, Russell Mendonca*, Zheyang Qin*, Katerina Fragkiadaki, Deepak Pathak .
 
 
 <!-- DESCRIPTION -->
