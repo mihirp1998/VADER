@@ -35,7 +35,6 @@ from opensora.utils.inference_utils import (
 )
 from opensora.utils.misc import all_exists, create_logger, is_distributed, is_main_process, to_torch_dtype
 
-
 import peft
 import torchvision
 from transformers.utils import ContextManagers

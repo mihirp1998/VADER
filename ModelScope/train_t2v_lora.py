@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../')   # setting path to get Core and assets
 import time
 import hydra
 __import__("builtins").st  = __import__("ipdb").set_trace

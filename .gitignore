@@ -1,3 +1,6 @@
+**/__pycache__
+
+# ModelScope
 ModelScope/outputs/
 ModelScope/media_vis/
 ModelScope/pretrained_models/
@@ -18,6 +21,8 @@ ModelScope/checkpoint/
 ModelScope/kinetics_middle_img/
 ModelScope/*.log
 ModelScope/config/v2
+
+# VideoCrafter
 VideoCrafter/.DS_Store
 VideoCrafter/*pyc
 VideoCrafter/.vscode
@@ -26,11 +31,15 @@ VideoCrafter/*.egg-info
 VideoCrafter/checkpoints
 VideoCrafter/results
 VideoCrafter/wandb
-
+VideoCrafter/project_dir
+VideoCrafter/scripts/evaluation/__pycache__
+VideoCrafter/scripts/lvdm/__pycache__
 
 
 # Byte-compiled / optimized / DLL files
 Open-Sora/__pycache__/
+Open-Sora/scripts/__pycache__
+Open-Sora/opensora/__pycache__
 Open-Sora/*.py[cod]
 Open-Sora/*$py.class
 
@@ -232,3 +241,6 @@ Open-Sora/tools/caption/pllava_dir/PLLaVA/
 Open-Sora/vbench
 Open-Sora/!eval/vbench
 Open-Sora/vbench2_beta_i2v
+
+# Video files
+Open-Sora/project_dir

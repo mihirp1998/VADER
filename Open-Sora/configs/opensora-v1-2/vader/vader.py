@@ -38,15 +38,15 @@ aes = 6.5
 flow = None
 
 # training settings
-is_vader_training = False            # if True, it will train the vader model, otherwise it will be inference only mode
+is_vader_training = True            # if True, it will train the vader model, otherwise it will be inference only mode
 train_batch_size = 1
-val_batch_size = 2
+val_batch_size = 1
 num_val_runs = 8
 seed = 200
-lora_ckpt_path = "peft_model_1300.pt"
-project_dir = "./project_dir/inference/cosmic-sun-65/seed200/origin"
+lora_ckpt_path = None
+project_dir = "./project_dir"
 lr = 0.0002
-reward_fn = "pick_score"
+reward_fn = "hps"
 gradient_accumulation_steps = 4
 
 dtype = "bf16"

@@ -54,6 +54,7 @@ setup(
             "tests",
             "tools",
             "*.egg-info",
+            "project_dir"
         )
     ),
     description="Democratizing Efficient Video Production for All",
@@ -76,15 +77,15 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: System :: Distributed Computing",
     ],
-    extras_require={
-        "data": fetch_requirements("requirements/requirements-data.txt"),
-        "eval": fetch_requirements("requirements/requirements-eval.txt"),
-        "vae": fetch_requirements("requirements/requirements-vae.txt"),
-        "full": fetch_requirements(
-            [
-                "requirements/requirements-data.txt",
-                "requirements/requirements-eval.txt",
-            ]
-        ),
-    },
+    # extras_require={
+    #     "data": fetch_requirements("requirements/requirements-data.txt"),
+    #     "eval": fetch_requirements("requirements/requirements-eval.txt"),
+    #     "vae": fetch_requirements("requirements/requirements-vae.txt"),
+    #     "full": fetch_requirements(
+    #         [
+    #             "requirements/requirements-data.txt",
+    #             "requirements/requirements-eval.txt",
+    #         ]
+    #     ),
+    # },
 )
