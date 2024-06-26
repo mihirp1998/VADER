@@ -1,20 +1,234 @@
-outputs/
-media_vis/
-pretrained_models/
-wandb/
-data/
-*.log
-__pycache__/
-*.pyc
-*.png
-media_vis/
-shan-myout/
-weights/
-vader_baselines_ckpts/
-*.gif
-*.jpg
-*.mp4
-checkpoint/
-kinetics_middle_img/
-*.log
-config/v2
+ModelScope/outputs/
+ModelScope/media_vis/
+ModelScope/pretrained_models/
+ModelScope/wandb/
+ModelScope/data/
+ModelScope/*.log
+ModelScope/__pycache__/
+ModelScope/*.pyc
+ModelScope/*.png
+ModelScope/media_vis/
+ModelScope/shan-myout/
+ModelScope/weights/
+ModelScope/vader_baselines_ckpts/
+ModelScope/*.gif
+ModelScope/*.jpg
+ModelScope/*.mp4
+ModelScope/checkpoint/
+ModelScope/kinetics_middle_img/
+ModelScope/*.log
+ModelScope/config/v2
+VideoCrafter/.DS_Store
+VideoCrafter/*pyc
+VideoCrafter/.vscode
+VideoCrafter/__pycache__
+VideoCrafter/*.egg-info
+VideoCrafter/checkpoints
+VideoCrafter/results
+VideoCrafter/wandb
+
+
+
+# Byte-compiled / optimized / DLL files
+Open-Sora/__pycache__/
+Open-Sora/*.py[cod]
+Open-Sora/*$py.class
+
+# C extensions
+Open-Sora/*.so
+
+# Distribution / packaging
+Open-Sora/.Python
+Open-Sora/build/
+Open-Sora/develop-eggs/
+Open-Sora/dist/
+Open-Sora/downloads/
+Open-Sora/eggs/
+Open-Sora/.eggs/
+Open-Sora/lib/
+Open-Sora/lib64/
+Open-Sora/parts/
+Open-Sora/sdist/
+Open-Sora/var/
+Open-Sora/wheels/
+Open-Sora/share/python-wheels/
+Open-Sora/*.egg-info/
+Open-Sora/.installed.cfg
+Open-Sora/*.egg
+Open-Sora/MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+Open-Sora/*.manifest
+Open-Sora/*.spec
+
+# Installer logs
+Open-Sora/pip-log.txt
+Open-Sora/pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+Open-Sora/htmlcov/
+Open-Sora/.tox/
+Open-Sora/.nox/
+Open-Sora/.coverage
+Open-Sora/.coverage.*
+Open-Sora/.cache
+Open-Sora/nosetests.xml
+Open-Sora/coverage.xml
+Open-Sora/*.cover
+Open-Sora/*.py,cover
+Open-Sora/.hypothesis/
+Open-Sora/.pytest_cache/
+Open-Sora/cover/
+
+# Translations
+Open-Sora/*.mo
+Open-Sora/*.pot
+
+# Django stuff:
+Open-Sora/*.log
+Open-Sora/local_settings.py
+Open-Sora/db.sqlite3
+Open-Sora/db.sqlite3-journal
+
+# Flask stuff:
+Open-Sora/instance/
+Open-Sora/.webassets-cache
+
+# Scrapy stuff:
+Open-Sora/.scrapy
+
+# Sphinx documentation
+Open-Sora/docs/_build/
+
+# PyBuilder
+Open-Sora/.pybuilder/
+Open-Sora/target/
+
+# Jupyter Notebook
+Open-Sora/.ipynb_checkpoints
+
+# IPython
+Open-Sora/profile_default/
+Open-Sora/ipython_config.py
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/#use-with-ide
+Open-Sora/.pdm.toml
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+Open-Sora/__pypackages__/
+
+# Celery stuff
+Open-Sora/celerybeat-schedule
+Open-Sora/celerybeat.pid
+
+# SageMath parsed files
+Open-Sora/*.sage.py
+
+# Environments
+Open-Sora/.env
+Open-Sora/.venv
+Open-Sora/env/
+Open-Sora/venv/
+Open-Sora/ENV/
+Open-Sora/env.bak/
+Open-Sora/venv.bak/
+
+
+# Spyder project settings
+Open-Sora/.spyderproject
+Open-Sora/.spyproject
+
+# Rope project settings
+Open-Sora/.ropeproject
+
+# mkdocs documentation
+Open-Sora/site
+
+# mypy
+Open-Sora/.mypy_cache/
+Open-Sora/.dmypy.json
+Open-Sora/dmypy.json
+
+# Pyre type checker
+Open-Sora/.pyre/
+
+# pytype static type analyzer
+Open-Sora/.pytype/
+
+# Cython debug symbols
+Open-Sora/cython_debug/
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+Open-Sora/.idea/
+Open-Sora/.vscode/
+
+# macos
+Open-Sora/*.DS_Store
+
+# misc files
+Open-Sora/data/
+Open-Sora/dataset/
+Open-Sora/runs/
+Open-Sora/checkpoints/
+Open-Sora/outputs/
+Open-Sora/outputs
+Open-Sora/samples/
+Open-Sora/samples
+Open-Sora/logs/
+Open-Sora/pretrained_models/
+Open-Sora/pretrained_models
+Open-Sora/evaluation_results/
+Open-Sora/cache/
+Open-Sora/*.swp
+
+# Secret files
+Open-Sora/hostfile
+Open-Sora/run.sh
+Open-Sora/gradio_cached_examples/
+Open-Sora/wandb/
+
+# vae weights
+Open-Sora/eval/vae/flolpips/weights/
+
+# npm
+Open-Sora/node_modules/
+Open-Sora/package-lock.json
+Open-Sora/package.json
+
+# PLLaVA
+Open-Sora/tools/caption/pllava_dir/PLLaVA/
+
+# vbench
+Open-Sora/vbench
+Open-Sora/!eval/vbench
+Open-Sora/vbench2_beta_i2v
