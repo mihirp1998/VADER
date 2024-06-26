@@ -1,3 +1,4 @@
+# copied from Open-Sora: https://github.com/hpcaitech/Open-Sora
 import math
 import random
 from collections import OrderedDict

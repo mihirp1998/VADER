@@ -1,3 +1,4 @@
+# copied from Open-Sora: https://github.com/hpcaitech/Open-Sora
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

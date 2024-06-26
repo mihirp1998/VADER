@@ -1,3 +1,4 @@
+# copied from Open-Sora: https://github.com/hpcaitech/Open-Sora
 import os
 from glob import glob
 

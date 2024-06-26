@@ -1,3 +1,4 @@
+# copied from Open-Sora: https://github.com/hpcaitech/Open-Sora
 from typing import Tuple, Union
 
 import torch.nn as nn

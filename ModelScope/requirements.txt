@@ -102,3 +102,4 @@ wandb==0.16.4
 wcwidth==0.2.13
 webdataset==0.2.86
 zipp==3.18.1
+importlib_resources

@@ -1,4 +1,10 @@
 **/__pycache__
+**/*.pyc
+**/*.log
+**/*.png
+**/*.jpg
+**/*.gif
+**/*.mp4
 
 # ModelScope
 ModelScope/outputs/
@@ -6,25 +12,17 @@ ModelScope/media_vis/
 ModelScope/pretrained_models/
 ModelScope/wandb/
 ModelScope/data/
-ModelScope/*.log
 ModelScope/__pycache__/
-ModelScope/*.pyc
-ModelScope/*.png
 ModelScope/media_vis/
 ModelScope/shan-myout/
 ModelScope/weights/
 ModelScope/vader_baselines_ckpts/
-ModelScope/*.gif
-ModelScope/*.jpg
-ModelScope/*.mp4
 ModelScope/checkpoint/
 ModelScope/kinetics_middle_img/
-ModelScope/*.log
 ModelScope/config/v2
 
 # VideoCrafter
 VideoCrafter/.DS_Store
-VideoCrafter/*pyc
 VideoCrafter/.vscode
 VideoCrafter/__pycache__
 VideoCrafter/*.egg-info

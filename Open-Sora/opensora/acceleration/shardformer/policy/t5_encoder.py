@@ -1,3 +1,4 @@
+# copied from Open-Sora: https://github.com/hpcaitech/Open-Sora
 from colossalai.shardformer.modeling.jit import get_jit_fused_dropout_add_func
 from colossalai.shardformer.modeling.t5 import get_jit_fused_T5_layer_ff_forward, get_T5_layer_self_attention_forward
 from colossalai.shardformer.policies.base_policy import Policy, SubModuleReplacementDescription

@@ -1,3 +1,4 @@
+# adapted from Open-Sora: https://github.com/hpcaitech/Open-Sora
 import torch
 from tqdm import tqdm
 import random

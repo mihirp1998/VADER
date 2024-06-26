@@ -16,13 +16,13 @@ import random
 import gc
 import copy
 import imageio
-from aesthetic_scorer import AestheticScorerDiff
-from actpred_scorer import ActPredScorer
+from Core.aesthetic_scorer import AestheticScorerDiff
+from Core.actpred_scorer import ActPredScorer
 import accelerate
 from accelerate import Accelerator
 from accelerate.state import AcceleratorState
 from typing import Dict, Optional, Tuple
-import prompts as prompts_file
+import Core.prompts as prompts_file
 import torch
 import torchvision.transforms as T
 import diffusers
@@ -216,7 +216,7 @@ def hps_loss_fn(inference_dtype=None, device=None):
         )    
         tokenizer = get_tokenizer(model_name)
     
-    checkpoint_path = f"{os.path.expanduser('~')}/.cache/hpsv2/HPS_v2_compressed.pt"
+    checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2_compressed.pt"
     # force download of model via score
     hpsv2.score([], "")
     

@@ -1,3 +1,4 @@
+# copied from Open-Sora: https://github.com/hpcaitech/Open-Sora
 # Adapted from DiT
 
 # This source code is licensed under the license found in the

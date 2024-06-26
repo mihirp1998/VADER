@@ -1,3 +1,4 @@
+# copied from Open-Sora: https://github.com/hpcaitech/Open-Sora
 # Adapted from PixArt
 #
 # Copyright (C) 2023  PixArt-alpha/PixArt-alpha

@@ -1,3 +1,4 @@
+# copied from Open-Sora: https://github.com/hpcaitech/Open-Sora
 # Copyright 2024 Vchitect/Latte
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

@@ -1,3 +1,4 @@
+# copied from Open-Sora: https://github.com/hpcaitech/Open-Sora
 from torch.optim.lr_scheduler import _LRScheduler
 
 
