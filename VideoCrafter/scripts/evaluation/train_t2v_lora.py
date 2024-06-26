@@ -1,5 +1,5 @@
 import argparse, os, sys, glob, yaml, math, random
-sys.path.append('../')   # setting path to get Core
+sys.path.append('../')   # setting path to get Core and assets
 
 import datetime, time
 import numpy as np
