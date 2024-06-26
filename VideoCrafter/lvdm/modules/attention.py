@@ -1,3 +1,4 @@
+# Copied from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 from functools import partial
 import torch
 from torch import nn, einsum

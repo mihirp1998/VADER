@@ -1,3 +1,4 @@
+# Adapted from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 import os, sys, glob
 import numpy as np
 from collections import OrderedDict
@@ -25,7 +26,7 @@ def batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=50, dd
     if cfg_scale != 1.0:
         if uncond_type == "empty_seq":
             prompts = batch_size * [""]
-            #prompts = N * T * [""]  ## if is_imgbatch=True
+
             uc_emb = model.get_learned_conditioning(prompts)
         elif uncond_type == "zero_embed":
             c_emb = cond["c_crossattn"][0] if isinstance(cond, dict) else cond
@@ -48,9 +49,7 @@ def batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=50, dd
     
     x_T = None
     batch_variants = []
-    #batch_variants1, batch_variants2 = [], []
-    # print("===3===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-    # st()
+
     for _ in range(n_samples):
         if ddim_sampler is not None:
             kwargs.update({"clean_cond": True})
@@ -68,8 +67,6 @@ def batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=50, dd
                                             **kwargs
                                             )
             
-        # print("===10===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-        # st()
         ## reconstruct from latent to pixel space
         if backprop_mode is not None:   # it is for training now. Use one frame randomly to save memory
             try:
@@ -89,8 +86,6 @@ def batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=50, dd
             batch_images = model.decode_first_stage_2DAE(samples)
         batch_variants.append(batch_images)
 
-        # print("==11===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-        # st()
     ## batch, <samples>, c, t, h, w
     batch_variants = torch.stack(batch_variants, dim=1)
     return batch_variants

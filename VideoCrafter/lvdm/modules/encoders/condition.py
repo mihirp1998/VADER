@@ -1,3 +1,4 @@
+# Copied from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 import torch
 import torch.nn as nn
 from torch.utils.checkpoint import checkpoint

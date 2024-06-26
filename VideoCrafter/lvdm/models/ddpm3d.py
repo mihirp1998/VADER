@@ -1,3 +1,4 @@
+# Copied from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 """
 wild mixture of
 https://github.com/openai/improved-diffusion/blob/e94489283bb876ac1477d5dd7709bbbd2d9902ce/improved_diffusion/gaussian_diffusion.py
@@ -519,15 +520,9 @@ class LatentDiffusion(DDPM):
                 cond = [cond]
             key = 'c_concat' if self.model.conditioning_key == 'concat' else 'c_crossattn'
             cond = {key: cond}
-        
-        # print("===6.2===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-        # print('x_noisy: ', x_noisy.shape, 't: ', t, 'cond:', cond)
-        # st()
 
         x_recon = self.model(x_noisy, t, **cond, **kwargs)
 
-        # print("===6.3===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-        # st()
         if isinstance(x_recon, tuple):
             return x_recon[0]
         else:

@@ -1,3 +1,4 @@
+# Copied from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 import math
 import numpy as np
 from einops import repeat

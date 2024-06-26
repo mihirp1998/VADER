@@ -1,3 +1,4 @@
+# Copied from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 import torch
 import numpy as np
 

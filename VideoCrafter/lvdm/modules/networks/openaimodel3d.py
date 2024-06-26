@@ -1,3 +1,4 @@
+# Copied from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 from functools import partial
 from abc import abstractmethod
 import torch

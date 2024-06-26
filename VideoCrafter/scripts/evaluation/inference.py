@@ -1,3 +1,4 @@
+# Adapted from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 import argparse, os, sys, glob, yaml, math, random
 import datetime, time
 import numpy as np

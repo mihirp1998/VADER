@@ -1,3 +1,4 @@
+# Copied from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 # pytorch_diffusion + derived encoder decoder
 import math
 import torch

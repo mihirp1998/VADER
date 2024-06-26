@@ -1,3 +1,4 @@
+# Copied from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 import datetime
 import argparse, importlib
 from pytorch_lightning import seed_everything

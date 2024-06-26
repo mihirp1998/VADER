@@ -1,4 +1,6 @@
 import argparse, os, sys, glob, yaml, math, random
+sys.path.append('../')   # setting path to get Core
+
 import datetime, time
 import numpy as np
 from omegaconf import OmegaConf
@@ -18,13 +20,13 @@ import peft
 import torchvision
 from transformers.utils import ContextManagers
 from transformers import AutoProcessor, AutoModel, AutoImageProcessor, AutoModelForObjectDetection, AutoModelForZeroShotObjectDetection
-from aesthetic_scorer import AestheticScorerDiff
-from actpred_scorer import ActPredScorer
-from weather_scorer import WeatherScorer
-from compression_scorer import JpegCompressionScorer, jpeg_compressibility
+from Core.aesthetic_scorer import AestheticScorerDiff
+from Core.actpred_scorer import ActPredScorer
+from Core.weather_scorer import WeatherScorer
+from Core.compression_scorer import JpegCompressionScorer, jpeg_compressibility
+import Core.prompts as prompts_file
 from hpsv2.src.open_clip import create_model_and_transforms, get_tokenizer
 import hpsv2
-import prompts as prompts_file
 import bitsandbytes as bnb
 from accelerate import Accelerator
 from accelerate.logging import get_logger
@@ -591,7 +593,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                 wandb_args['mode'] = "disabled"
             
             opt_dict = vars(args)   # convert args to dict
-            accelerator.init_trackers("VideoCrafter", config=opt_dict, init_kwargs={"wandb": wandb_args})
+            accelerator.init_trackers("VADER-VideoCrafter", config=opt_dict, init_kwargs={"wandb": wandb_args})
             output_dir = create_output_folders(args.project_dir, wandb.run.name)    # all processes will create the same output folder
             # convert output_dir to broadcastable tensor, so that it can be broadcasted to all processes
             output_dir_broadcast = [output_dir]
@@ -1073,7 +1075,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
 
 if __name__ == '__main__':
     now = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-    print("@CoLVDM Inference: %s"%now)
+    print("@VADER: %s"%now)
     parser = get_parser()
     args = parser.parse_args()
     seed_everything(args.seed)

@@ -1,3 +1,4 @@
+# Adapted from VideoCrafter: https://github.com/AILab-CVC/VideoCrafter
 import numpy as np
 from tqdm import tqdm
 import torch
@@ -116,8 +117,7 @@ class DDIMSampler(object):
             C, T, H, W = shape
             size = (batch_size, C, T, H, W)
         # print(f'Data shape for DDIM sampling is {size}, eta {eta}')
-        # print("===4===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-        # st()
+
         samples, intermediates = self.ddim_sampling(conditioning, size,     # samples: batch, c, t, h, w
                                                     callback=callback,
                                                     img_callback=img_callback,
@@ -217,9 +217,7 @@ class DDIMSampler(object):
                 size=target_size_,
                 mode="nearest",
                 )
-            # print("===5===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-            # print("ts", ts, "index", index, "cond[c_crossattn][0].shape", cond["c_crossattn"][0].shape)
-            # st()
+
             forward_context = torch.autograd.graph.save_on_cpu
             with forward_context():
                 outs = self.p_sample_ddim(img, cond, ts, index=index, use_original_steps=ddim_use_original_steps,
@@ -232,8 +230,7 @@ class DDIMSampler(object):
                                         **kwargs)
             
             img, pred_x0 = outs
-            # print("===9===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-            # st()
+
             if callback: callback(i)
             if img_callback: img_callback(pred_x0, i)
 
@@ -261,21 +258,13 @@ class DDIMSampler(object):
             # with unconditional condition
             if isinstance(c, torch.Tensor):
                 e_t = self.model.apply_model(x, t, c, **kwargs) # unet denoiser
-                # print("===7.0===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-                # st()
                 e_t_uncond = self.model.apply_model(x, t, unconditional_conditioning, **kwargs)
             elif isinstance(c, dict):
-                # print("===6.1===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-                # st()
                 e_t = self.model.apply_model(x, t, c, **kwargs) # unet denoiser
-                # print("===7.0===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-                # st()
                 e_t_uncond = self.model.apply_model(x, t, unconditional_conditioning, **kwargs) # unet denoiser
             else:
                 raise NotImplementedError
-            # text cfg
-            # print("===7.1===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-            # st()
+
             if uc_type is None:
                 e_t = e_t_uncond + unconditional_guidance_scale * (e_t - e_t_uncond)
             else:
@@ -285,15 +274,13 @@ class DDIMSampler(object):
                     e_t = e_t + unconditional_guidance_scale * (e_t_uncond - e_t)
                 else:
                     raise NotImplementedError
-            # print("===7.2===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-            # st()
+
             # temporal guidance
             if conditional_guidance_scale_temporal is not None:
                 e_t_temporal = self.model.apply_model(x, t, c, **kwargs)
                 e_t_image = self.model.apply_model(x, t, c, no_temporal_attn=True, **kwargs)
                 e_t = e_t + conditional_guidance_scale_temporal * (e_t_temporal - e_t_image)
-        # print("===8===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-        # st()
+
         if score_corrector is not None:
             assert self.model.parameterization == "eps"
             e_t = score_corrector.modify_score(self.model, e_t, x, t, c, **corrector_kwargs)
