@@ -186,11 +186,10 @@ def hps_loss_fn(inference_dtype=None, device=None, hps_version="v2.0"):
     
     tokenizer = get_tokenizer(model_name)
     
-    if hps_version == "v2.0":
-        checkpoint_path = f"{os.path.expanduser('~')}/.cache/hpsv2/HPS_v2_compressed.pt"
-    else:
-        print("=================== HPS v2.1 ===================")
-        checkpoint_path = f"{os.path.expanduser('~')}/.cache/hpsv2/HPS_v2.1_compressed.pt"
+    if hps_version == "v2.0":   # if there is a error, please download the model manually and set the path
+        checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2_compressed.pt"
+    else:   # hps_version == "v2.1"
+        checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2.1_compressed.pt"
     # force download of model via score
     hpsv2.score([], "", hps_version=hps_version)
     
@@ -260,11 +259,10 @@ def aesthetic_hps_loss_fn(aesthetic_target=None,
     
     # tokenizer = get_tokenizer(model_name)
     
-    if hps_version == "v2.0":
-        checkpoint_path = f"{os.path.expanduser('~')}/.cache/hpsv2/HPS_v2_compressed.pt"
-    else:
-        print("=================== HPS v2.1 ===================")
-        checkpoint_path = f"{os.path.expanduser('~')}/.cache/hpsv2/HPS_v2.1_compressed.pt"
+    if hps_version == "v2.0":   # if there is a error, please download the model manually and set the path
+        checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2_compressed.pt"
+    else:   # hps_version == "v2.1"
+        checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2.1_compressed.pt"
     # force download of model via score
     hpsv2.score([], "", hps_version=hps_version)
     
@@ -897,6 +895,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                             video_frames_ = video_frames_.permute(0,2,1,3,4)    # b,c,f,h,w >> b,f,c,h,w
                             loss, rewards = loss_fn(video_frames_, prompts[0]) 
                     else:
+                        assert args.decode_frame not in  ['fml', 'all', 'alt']
                         video_frames_ = batch_samples.permute(1,0,3,2,4,5)    # batch,samples,channels,frames,height,width >> s,b,f,c,h,w
                         s_, bs, nf, c_, h_, w_ = video_frames_.shape
                         assert s_ == 1 # samples should only be on single sample in training mode

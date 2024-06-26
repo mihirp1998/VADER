@@ -1,6 +1,8 @@
 import os
 import time
 from pprint import pformat
+import sys
+sys.path.append('../')   # setting path to get Core and assets
 
 import colossalai
 import torch
@@ -38,7 +40,7 @@ import peft
 import torchvision
 from transformers.utils import ContextManagers
 from transformers import AutoProcessor, AutoModel, AutoImageProcessor, AutoModelForObjectDetection, AutoModelForZeroShotObjectDetection
-from aesthetic_scorer import AestheticScorerDiff
+from Core.aesthetic_scorer import AestheticScorerDiff
 from hpsv2.src.open_clip import create_model_and_transforms, get_tokenizer
 import hpsv2
 import numpy as np
@@ -138,10 +140,10 @@ def hps_loss_fn(inference_dtype=None, device=None, hps_version="v2.0"):
     tokenizer = get_tokenizer(model_name)
     
     if hps_version == "v2.0":
-        checkpoint_path = f"{os.path.expanduser('~')}/.cache/hpsv2/HPS_v2_compressed.pt"
+        checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2_compressed.pt"
     else:
         print("=================== HPS v2.1 ===================")
-        checkpoint_path = f"{os.path.expanduser('~')}/.cache/hpsv2/HPS_v2.1_compressed.pt"
+        checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2.1_compressed.pt"
     # force download of model via score
     hpsv2.score([], "", hps_version=hps_version)
     
@@ -212,10 +214,10 @@ def aesthetic_hps_loss_fn(aesthetic_target=None,
     # tokenizer = get_tokenizer(model_name)
     
     if hps_version == "v2.0":
-        checkpoint_path = f"{os.path.expanduser('~')}/.cache/hpsv2/HPS_v2_compressed.pt"
+        checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2_compressed.pt"
     else:
         print("=================== HPS v2.1 ===================")
-        checkpoint_path = f"{os.path.expanduser('~')}/.cache/hpsv2/HPS_v2.1_compressed.pt"
+        checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2.1_compressed.pt"
     # force download of model via score
     hpsv2.score([], "", hps_version=hps_version)
     
@@ -652,6 +654,8 @@ def main():
                                         hps_version=cfg.get("hps_version", "v2.1"))
     elif cfg.get("reward_fn", "aesthetic") == "pick_score":
         loss_fn = pick_score_loss_fn(peft_model.dtype, accelerator.device)
+    else:
+        raise NotImplementedError(f"Reward function {cfg.get('reward_fn', 'aesthetic')} is not implemented for Open-Sora.")
         
     
     # accelerate the model

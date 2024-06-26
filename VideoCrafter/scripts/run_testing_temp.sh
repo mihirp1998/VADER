@@ -12,7 +12,7 @@ accelerate launch --num_processes 1 --main_process_port 29519 scripts/evaluation
 --ckpt_path $ckpt \
 --config $config \
 --n_samples 1 \
---bs 1 --height 320 --width 512 \
+--bs 1 --height 320 --width 320 \
 --unconditional_guidance_scale 12.0 \
 --ddim_steps 5 \
 --ddim_eta 1.0 \
@@ -23,11 +23,11 @@ accelerate launch --num_processes 1 --main_process_port 29519 scripts/evaluation
 --gradient_accumulation_steps 4 \
 --num_train_epochs 200 \
 --train_batch_size 1 \
---val_batch_size 4 \
+--val_batch_size 1 \
 --num_val_runs 1 \
---reward_fn 'actpred' \
---decode_frame 'alt' \
---hps_version 'v2.1' \
+--reward_fn 'hps' \
+--decode_frame '-1' \
+--hps_version 'v2.0' \
 --lr 0.0002 \
 --validation_steps 10 \
 --lora_rank 16 \
