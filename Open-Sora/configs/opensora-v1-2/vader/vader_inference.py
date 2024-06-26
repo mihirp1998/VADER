@@ -38,10 +38,10 @@ aes = 6.5
 flow = None
 
 # training settings
-is_vader_training = True            # if True, it will train the vader model, otherwise it will be inference only mode
+is_vader_training = False            # if True, it will train the vader model, otherwise it will be inference only mode
 train_batch_size = 1
 val_batch_size = 1
-num_val_runs = 8
+num_val_runs = 2
 seed = 200
 lora_ckpt_path = None
 project_dir = "./project_dir"

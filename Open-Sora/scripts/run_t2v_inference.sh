@@ -1,4 +1,4 @@
-nohup accelerate launch --main_process_port 29517 scripts/train_t2v_lora.py configs/opensora-v1-2/vader/vader.py \
+nohup accelerate launch --num_processes 1 --main_process_port 29517 scripts/train_t2v_lora.py configs/opensora-v1-2/vader/vader_inference.py \
 --num-frames 2s \
 --resolution 360p \
 --aspect-ratio 3:4 \
