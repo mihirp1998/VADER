@@ -1,6 +1,6 @@
 # Based on https://github.com/christophschuhmann/improved-aesthetic-predictor/blob/fe88a163f4661b4ddabba0751ff645e2e620746e/simple_inference.py
-import ipdb
-st = ipdb.set_trace
+# import ipdb
+# st = ipdb.set_trace
 from importlib_resources import files
 import torch
 import torch.nn as nn

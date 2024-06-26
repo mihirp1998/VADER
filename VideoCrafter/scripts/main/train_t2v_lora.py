@@ -84,7 +84,7 @@ def get_parser():
     parser.add_argument("--num_val_runs", type=int, default=1, help="total number of validation samples = num_val_runs * num_gpus * num_val_batch")
     parser.add_argument("--train_batch_size", type=int, default=1, help="batch size for training")
     parser.add_argument("--reward_fn", type=str, default="aesthetic", help="reward function: 'aesthetic', 'hps', 'aesthetic_hps', 'pick_score', 'rainy', 'snowy', 'objectDetection'")
-    parser.add_argument("--compression_model_path", type=str, default='./assets/compression_reward.pt', help="compression model path")
+    parser.add_argument("--compression_model_path", type=str, default='../assets/compression_reward.pt', help="compression model path")
     # default is "dog." for grounding-dino model . Remember to add "." at the end of the object name for grounding-dino model. 
     # But for yolos model, do not add "." at the end of the object name.
     parser.add_argument("--target_object", type=str, default="dog", help="target object for object detection reward function")
@@ -391,9 +391,9 @@ def weather_loss_fn(inference_dtype=None, device=None, weather="rainy", target=N
         loss_fn: function, the loss function of the weather reward function.
     '''
     if weather == "rainy":
-        reward_model_path = "./assets/rainy_reward.pt"
+        reward_model_path = "../assets/rainy_reward.pt"
     elif weather == "snowy":
-        reward_model_path = "./assets/snowy_reward.pt"
+        reward_model_path = "../assets/snowy_reward.pt"
     else:
         raise NotImplementedError
     scorer = WeatherScorer(dtype=inference_dtype, model_path=reward_model_path).to(device, dtype=inference_dtype)
@@ -561,8 +561,7 @@ def should_sample(global_step, validation_steps, is_sample_preview):
 
 
 def run_training(args, gpu_num, gpu_no, **kwargs):
-    ## step 1: accelerator setup
-    ## -----------------------------------------------------------------
+    ## ---------------------step 1: accelerator setup---------------------------
     accelerator = Accelerator(                                                  # Initialize Accelerator
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         mixed_precision=args.mixed_precision,
@@ -604,10 +603,8 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
         output_dir = output_dir_broadcast[0]
         print(f"+++++++++++++++++++output_dir: {output_dir}+++++++++++++++++++++++++++++++++")
 
-    ## step 2: model config
-    ## -----------------------------------------------------------------
+    ## ------------------------step 2: model config-----------------------------
     config = OmegaConf.load(args.config)
-    #data_config = config.pop("data", OmegaConf.create())
     model_config = config.pop("model", OmegaConf.create())
     model = instantiate_from_config(model_config)
     model = model.cuda(gpu_no)
@@ -618,7 +615,6 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
     if args.mixed_precision != 'no':
         model.first_stage_model = model.first_stage_model.half()
         model.cond_stage_model = model.cond_stage_model.half()
-        # model.model = model.model.half()
 
     # step 2.1: add LoRA using peft
     config = peft.LoraConfig(
@@ -635,16 +631,15 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
 
     # load the pretrained LoRA model
     if args.lora_ckpt_path is not None:
-        # load the pretrained LoRA model
         peft.set_peft_model_state_dict(peft_model, torch.load(args.lora_ckpt_path))
     
-    # Inference Step: only do inference and save the videos
+    # Inference Step: only do inference and save the videos. Skip this step if it is training
     # ==================================================================
     if args.inference_only:
         peft_model = accelerator.prepare(peft_model)
-        ## sample shape
+        # sample shape
         assert (args.height % 16 == 0) and (args.width % 16 == 0), "Error: image size [h,w] should be multiples of 16!"
-        ## latent noise shape
+        # latent noise shape
         h, w = args.height // 8, args.width // 8
         if isinstance(peft_model, torch.nn.parallel.DistributedDataParallel):
             frames = peft_model.module.temporal_length if args.frames < 0 else args.frames
@@ -653,10 +648,10 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
             frames = peft_model.temporal_length if args.frames < 0 else args.frames
             channels = peft_model.channels
 
-        ## Inference step 3: load data
+        ## Inference step 1: load data
         prompt_fn = getattr(prompts_file, args.prompt_fn)    # Get the prompt function, default is nouns_activities()
 
-        ## Inference step 4: run Inference over samples
+        ## Inference step 2: run Inference over samples
         logger.info("***** Running inference *****")
         
         first_epoch = 0
@@ -666,7 +661,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
         progress_bar = tqdm(range(global_step, args.val_batch_size * accelerator.num_processes * args.num_val_runs))
         progress_bar.set_description("Inference Steps")
 
-        ## Inference Step 5: generate new validation videos
+        ## Inference Step 3: generate new validation videos
         with torch.no_grad():
             vis_dict = {}
 
@@ -686,7 +681,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                     # store output of generations in dict
                     results=dict(filenames=[],dir_name=[], prompt=[], gpu_no=[])
 
-                    # Inference Step 5.1: forward pass
+                    # Inference Step 3.1: forward pass
                     batch_size = len(val_prompt)
                     noise_shape = [batch_size, channels, frames, h, w]
 
@@ -708,7 +703,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                         else:   # TODO: implement i2v mode training in the future
                             raise NotImplementedError
 
-                        # Inference Step 5.2: inference, batch_samples shape: batch, <samples>, c, t, h, w
+                        # Inference Step 3.2: inference, batch_samples shape: batch, <samples>, c, t, h, w
                         # no backprop_mode=args.backprop_mode because it is inference process 
                         if isinstance(peft_model, torch.nn.parallel.DistributedDataParallel):
                             batch_samples = batch_ddim_sampling(peft_model.module, cond, noise_shape, args.n_samples, \
@@ -717,7 +712,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                             batch_samples = batch_ddim_sampling(peft_model, cond, noise_shape, args.n_samples, \
                                                                     args.ddim_steps, args.ddim_eta, args.unconditional_guidance_scale, None, decode_frame=args.decode_frame, **kwargs)
                     
-                    ## batch_samples: b,samples,c,t,h,w
+                    # batch_samples: b,samples,c,t,h,w
                     dir_name = os.path.join(output_dir, "samples", f"step_{global_step}")
                     # filenames should be related to the gpu index
                     filenames = [f"{n}_{accelerator.local_process_index}_{id+1:04d}" for id in range(batch_samples.shape[0])] # from 0 to batch size, n is the index of the batch
@@ -731,10 +726,10 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                     results["prompt"].extend(prompts)
                     results=[ results ] # transform to list, otherwise gather_object() will not collect correctly
                 
-                # Inference Step 5.3: collect inference results and save the videos to wandb
+                # Inference Step 3.3: collect inference results and save the videos to wandb
                 # collect inference results from all the GPUs
                 results_gathered=gather_object(results)
-                # accelerator.wait_for_everyone() # wait for all processes to finish saving the videos
+
                 if accelerator.is_main_process:
                     filenames = []
                     dir_name = []
@@ -743,6 +738,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                         filenames.extend(results_gathered[i]["filenames"])
                         dir_name.extend(results_gathered[i]["dir_name"])
                         prompts.extend(results_gathered[i]["prompt"])
+                    
                     # upload the video and their corresponding prompt to wandb
                     if args.use_wandb:
                         for i, filename in enumerate(filenames):
@@ -801,21 +797,18 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
 
     peft_model, optimizer, loss_fn = accelerator.prepare(peft_model, optimizer, loss_fn)
 
-    ## sample shape
+    # sample shape
     assert (args.height % 16 == 0) and (args.width % 16 == 0), "Error: image size [h,w] should be multiples of 16!"
-    ## latent noise shape
+    # latent noise shape
     h, w = args.height // 8, args.width // 8
     frames = peft_model.module.temporal_length if args.frames < 0 else args.frames
     channels = peft_model.module.channels
 
 
-    ## step 3: load data
-    ## -----------------------------------------------------------------
+    ## ------------------------step 3: load data--------------------------------
     prompt_fn = getattr(prompts_file, args.prompt_fn)    # Get the prompt function, default is nouns_activities()
 
-    
-    ## step 4: run training over samples
-    ## -----------------------------------------------------------------
+    ## -------------------step 4: run training over samples---------------------
     # Train!
     total_batch_size = args.train_batch_size * accelerator.num_processes * args.gradient_accumulation_steps
 
@@ -870,7 +863,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                     else:   # TODO: implement i2v mode training in the future
                         raise NotImplementedError
 
-                    ## Step 4.1: inference, batch_samples shape: batch, <samples>, c, t, h, w
+                    # Step 4.1: inference, batch_samples shape: batch, <samples>, c, t, h, w
                     if isinstance(peft_model, torch.nn.parallel.DistributedDataParallel):
                         batch_samples = batch_ddim_sampling(peft_model.module, cond, noise_shape, args.n_samples, \
                                                             args.ddim_steps, args.ddim_eta, args.unconditional_guidance_scale, None, backprop_mode=args.backprop_mode, decode_frame=args.decode_frame, **kwargs)
@@ -878,34 +871,34 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                         batch_samples = batch_ddim_sampling(peft_model, cond, noise_shape, args.n_samples, \
                                                                 args.ddim_steps, args.ddim_eta, args.unconditional_guidance_scale, None, backprop_mode=args.backprop_mode, decode_frame=args.decode_frame, **kwargs)
                     
-                    if args.reward_fn in ["actpred", "vidclip"]:
+                    if args.reward_fn in ["actpred", "vidclip"]:    #"vidclip" is not implemented for VideoCrafter
                         assert args.decode_frame in  ['fml', 'all', 'alt']
                         assert len(prompts) ==1
                         if args.reward_fn == "actpred":
-                            assert batch_samples.shape[1] == 1 # only one sample in training mode
+                            assert batch_samples.shape[1] == 1          # only one sample in training mode
                             video_frames_ = batch_samples.squeeze(1)    # batch,samples,channels,frames,height,width >> b,c,f,h,w
                             video_frames_ = video_frames_.permute(0,2,1,3,4)    # b,c,f,h,w >> b,f,c,h,w
-                            assert video_frames_.shape[0] == 1 # batch size should be 1
+                            assert video_frames_.shape[0] == 1          # batch size should be 1
                             video_frames_ = video_frames_.squeeze(0)    # b,f,c,h,w >> f,c,h,w
 
                             loss, rewards, pred_cls = loss_fn(video_frames_, prompts[0])
                         else:
-                            assert batch_samples.shape[1] == 1 # only one sample in training mode
+                            assert batch_samples.shape[1] == 1          # only one sample in training mode
                             video_frames_ = batch_samples.squeeze(1)    # batch,samples,channels,frames,height,width >> b,c,f,h,w
                             video_frames_ = video_frames_.permute(0,2,1,3,4)    # b,c,f,h,w >> b,f,c,h,w
                             loss, rewards = loss_fn(video_frames_, prompts[0]) 
                     else:
                         assert args.decode_frame not in  ['fml', 'all', 'alt']
-                        video_frames_ = batch_samples.permute(1,0,3,2,4,5)    # batch,samples,channels,frames,height,width >> s,b,f,c,h,w
+                        video_frames_ = batch_samples.permute(1,0,3,2,4,5)      # batch,samples,channels,frames,height,width >> s,b,f,c,h,w
                         s_, bs, nf, c_, h_, w_ = video_frames_.shape
-                        assert s_ == 1 # samples should only be on single sample in training mode
-                        video_frames_ = video_frames_.squeeze(0)    # s,b,f,c,h,w >> b,f,c,h,w
-                        assert nf == 1 # reward should only be on single frame
-                        video_frames_ = video_frames_.squeeze(1)    # b,f,c,h,w >> b,c,h,w
+                        assert s_ == 1                                  # samples should only be on single sample in training mode
+                        video_frames_ = video_frames_.squeeze(0)        # s,b,f,c,h,w >> b,f,c,h,w
+                        assert nf == 1                                  # reward should only be on single frame
+                        video_frames_ = video_frames_.squeeze(1)        # b,f,c,h,w >> b,c,h,w
                         video_frames_ = video_frames_.to(peft_model.module.dtype)
                         
                         if args.reward_fn == "aesthetic" or args.reward_fn == "rainy" or args.reward_fn == "snowy" or args.reward_fn == "objectDetection" or args.reward_fn == "compression_score":
-                            loss, rewards = loss_fn(video_frames_)  # video_frames_ in range [-1, 1]
+                            loss, rewards = loss_fn(video_frames_)      # video_frames_ in range [-1, 1]
                             
                         else:   # 'hps' or 'pick_score' or 'aesthetic_hps' 
                             loss, rewards = loss_fn(video_frames_,prompts) 
@@ -928,7 +921,6 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                 # Step 4.3 logging and save checkpoint
                 if accelerator.sync_gradients:
                     global_step += 1
-                    # log_dict_step = {f"Step {global_step} | Step Loss: {loss.detach().item()} | Step Reward: {rewards.detach().item()}"}
                     log_dict_step = {"step_loss": loss.detach().item(), "step_reward": rewards.detach().item()}
                     accelerator.log(log_dict_step, step=global_step)
                     progress_bar.update(1)
@@ -939,7 +931,6 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                         if accelerator.is_local_main_process:
                             unwrapped_model = accelerator.unwrap_model(peft_model)
                             # save lora model only
-                            # TODO:
                             peft_state_dict = peft.get_peft_model_state_dict(unwrapped_model)
                             peft_model_path = os.path.join(output_dir, f"peft_model_{global_step}.pt")
                             torch.save(peft_state_dict, peft_model_path)
@@ -952,7 +943,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
                 if global_step >= args.max_train_steps:
                     break
             
-            ## Step 5: Validation and save videos
+            ## ---------------Step 5: Validation and save videos----------------
             if should_sample(global_step, validation_steps, args.is_sample_preview):
                 ## 5.1 save the training sample
                 if accelerator.is_local_main_process:
@@ -1074,7 +1065,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
 
 if __name__ == '__main__':
     now = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-    print("@VADER: %s"%now)
+    print("@VADER-VideoCrafter: %s"%now)
     parser = get_parser()
     args = parser.parse_args()
     seed_everything(args.seed)

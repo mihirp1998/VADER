@@ -1,13 +1,12 @@
+# Build and modified from Open-Sora/scripts/inference.py
 import os
 import time
 from pprint import pformat
 import sys
 sys.path.append('../')   # setting path to get Core and assets
 
-import colossalai
 import torch
 import torch.distributed as dist
-from colossalai.cluster import DistCoordinator
 from pytorch_lightning import seed_everything
 from tqdm import tqdm
 
@@ -18,34 +17,27 @@ from opensora.models.text_encoder.t5 import text_preprocessing
 from opensora.registry import MODELS, SCHEDULERS, build_module
 from opensora.utils.config_utils import parse_configs
 from opensora.utils.inference_utils import (
-    add_watermark,
-    append_generated,
     append_score_to_prompts,
     apply_mask_strategy,
     collect_references_batch,
-    dframe_to_frame,
     extract_json_from_prompts,
     extract_prompts_loop,
-    get_save_path_name,
     load_prompts,
     merge_prompt,
     prepare_multi_resolution_info,
-    refine_prompts_by_openai,
     split_prompt,
 )
-from opensora.utils.misc import all_exists, create_logger, is_distributed, is_main_process, to_torch_dtype
+from opensora.utils.misc import create_logger, to_torch_dtype
 
 import peft
 import torchvision
-from transformers.utils import ContextManagers
-from transformers import AutoProcessor, AutoModel, AutoImageProcessor, AutoModelForObjectDetection, AutoModelForZeroShotObjectDetection
+from transformers import AutoProcessor, AutoModel
 from Core.aesthetic_scorer import AestheticScorerDiff
 from hpsv2.src.open_clip import create_model_and_transforms, get_tokenizer
 import hpsv2
 import numpy as np
 import bitsandbytes as bnb
 from accelerate import Accelerator
-from accelerate.logging import get_logger
 from accelerate.utils import gather_object
 import datetime
 import torch.distributed as dist
@@ -140,9 +132,9 @@ def hps_loss_fn(inference_dtype=None, device=None, hps_version="v2.0"):
     
     if hps_version == "v2.0":
         checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2_compressed.pt"
-    else:
-        print("=================== HPS v2.1 ===================")
+    else:   # hps_version == "v2.1"
         checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2.1_compressed.pt"
+    
     # force download of model via score
     hpsv2.score([], "", hps_version=hps_version)
     
@@ -208,9 +200,7 @@ def aesthetic_hps_loss_fn(aesthetic_target=None,
             output_dict=True,
             with_score_predictor=False,
             with_region_predictor=False
-        )    
-    
-    # tokenizer = get_tokenizer(model_name)
+        )
     
     if hps_version == "v2.0":
         checkpoint_path = f"{os.path.expanduser('~')}/.cache/huggingface/hub/models--xswu--HPSv2/snapshots/697403c78157020a1ae59d23f111aa58ced35b0a/HPS_v2_compressed.pt"
@@ -347,8 +337,6 @@ def main():
     torch.set_grad_enabled(cfg.get("is_vader_training", False))   # enable vader training!!!
 
     # == init distributed env ==
-
-    coordinator = None
     enable_sequence_parallelism = False
     seed_everything(cfg.get("seed", 1024))
 
@@ -378,7 +366,7 @@ def main():
                 wandb_args['mode'] = "disabled"
             
             opt_dict = vars(cfg)   # convert args to dict
-            accelerator.init_trackers("OpenSora-Vader", config=opt_dict, init_kwargs={"wandb": wandb_args})
+            accelerator.init_trackers("VADER-OpenSora", config=opt_dict, init_kwargs={"wandb": wandb_args})
             output_dir = create_output_folders(cfg.get("project_dir", "./project_dir"), wandb.run.name)    # all processes will create the same output folder
             # convert output_dir to broadcastable tensor, so that it can be broadcasted to all processes
             output_dir_broadcast = [output_dir]
@@ -458,7 +446,7 @@ def main():
         peft.set_peft_model_state_dict(peft_model, torch.load(cfg.get("lora_ckpt_path", None)))
     
 
-    # ================= inference only mode starts =============================
+    # ========= inference only mode starts. Skip this part if it is training =============
     if not cfg.get("is_vader_training", False): # if it is inference only mode
         
         peft_model = accelerator.prepare(peft_model)
@@ -515,8 +503,6 @@ def main():
                     results=dict(filenames=[],dir_name=[], prompt=[], gpu_no=[])
 
                     # Step 5.2.1: forward pass
-                    batch_size = len(val_prompt)
-                    
                     # == get json from prompts ==
                     val_prompt, val_refs, val_ms = extract_json_from_prompts(val_prompt, val_refs, val_ms)
 
@@ -603,7 +589,7 @@ def main():
                 
                 # collect inference results from all the GPUs
                 results_gathered=gather_object(results)
-                # accelerator.wait_for_everyone() # wait for all processes to finish saving the videos
+
                 if accelerator.is_main_process:
                     filenames = []
                     dir_name = []
@@ -771,7 +757,7 @@ def main():
                 batch_prompts.append(merge_prompt(prompt_segment_list, loop_idx_list))
 
             # == Iter over loop generation ==
-            assert loop == 1, "Only support loop=1 for training"
+            assert loop == 1, "Only support loop=1 for vader training"
             batch_prompts_loop = extract_prompts_loop(batch_prompts, loop)  # loop = 1 for vader training
 
 
@@ -810,17 +796,17 @@ def main():
                             samples = vae.decode(samples[:,:,idxs,:,:].to(dtype), num_frames=len(idxs))         # samples: batch, c, t, h, w
 
                     # == calculate the loss ==
-                    video_frames_ = samples.permute(0,2,1,3,4)    # batch,channels,frames,height,width >> b,f,c,h,w
+                    video_frames_ = samples.permute(0,2,1,3,4)      # batch,channels,frames,height,width >> b,f,c,h,w
                     bs, nf, c_, h_, w_ = video_frames_.shape
-                    assert nf == 1 # reward should only be on single frame for training, we only support decode_frame = -1
-                    video_frames_ = video_frames_.squeeze(1)    # b,f,c,h,w >> b,c,h,w
+                    assert nf == 1                                  # reward should only be on single frame for training, we only support decode_frame = -1
+                    video_frames_ = video_frames_.squeeze(1)        # b,f,c,h,w >> b,c,h,w
                     video_frames_ = video_frames_.to(peft_model.module.dtype)
                     
                     # batch_prompts_loop ends with aesthetic score: rabbit in a black dress aesthetic score: 6.5. We need to remove the aesthetic score
                     pure_prompts = [prompt.split("aesthetic score:")[0].strip() for prompt in batch_prompts_loop]
                     
                     if cfg.get("reward_fn", "aesthetic") == "aesthetic" or cfg.get("reward_fn", "aesthetic") == "objectDetection" or cfg.get("reward_fn", "aesthetic") == "compression_score":
-                        loss, rewards = loss_fn(video_frames_)  # video_frames_ in range [-1, 1]
+                        loss, rewards = loss_fn(video_frames_)      # video_frames_ in range [-1, 1]
                         
                     else:   # 'hps' or 'pick_score' or 'aesthetic_hps'
                         loss, rewards = loss_fn(video_frames_,pure_prompts) 
@@ -898,9 +884,6 @@ def main():
                     # video validation loop
                     for n in range(cfg.get("num_val_runs", 1)):
                         prompt_idx = random.sample(range(len(prompts)), cfg.get("val_batch_size", 1) * accelerator.num_processes)
-                        # prompts_all = [prompts[i] for i in prompt_idx]    # prompt
-                        # ms_all = [mask_strategy[i] for i in prompt_idx]         # mask_strategy
-                        # refs_all = [reference_path[i] for i in prompt_idx]      # references
 
                         with accelerator.split_between_processes(prompt_idx) as val_idx:
 
@@ -913,8 +896,6 @@ def main():
                             results=dict(filenames=[],dir_name=[], prompt=[], gpu_no=[])
 
                             # Step 5.2.1: forward pass
-                            batch_size = len(val_prompt)
-                            
                             # == get json from prompts ==
                             val_prompt, val_refs, val_ms = extract_json_from_prompts(val_prompt, val_refs, val_ms)
 

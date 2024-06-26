@@ -7,8 +7,8 @@ import torch
 import torchvision
 import albumentations as A
 from transformers import CLIPModel, CLIPProcessor
-import ipdb
-st = ipdb.set_trace
+# import ipdb
+# st = ipdb.set_trace
 
 def jpeg_compressibility(device):
     def _fn(images):

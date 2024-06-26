@@ -3,8 +3,8 @@ from collections.abc import Iterable
 
 import torch.nn as nn
 from torch.utils.checkpoint import checkpoint, checkpoint_sequential
-import ipdb
-st = ipdb.set_trace
+# import ipdb
+# st = ipdb.set_trace
 
 
 def set_grad_checkpoint(model, use_fp32_attention=False, gc_step=1):
