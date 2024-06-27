@@ -48,6 +48,7 @@ project_dir = "./project_dir"       # project directory, in which checkpoints, a
 lr = 0.0002                         # learning rate
 reward_fn = "hps"                   # reward function in Open-Sora: ['aesthetic', 'hps', 'aesthetic_hps', 'pick_score']. It does not matter if is_vader_training is False
 gradient_accumulation_steps = 4     
+lora_rank = 16                      # rank of the LoRA model, the higher, the larger memory footprint
 
 dtype = "bf16"                      # data type: it suggests to use bf16 for 240p resolution
 mixed_precision = "bf16"            
@@ -57,7 +58,6 @@ checkpointing_steps = 1             # The frequency of saving checkpoints
 use_wandb = True                    # if True, it will log the training progress to wandb
 wandb_entity = ""                   # wandb entity
 debug = False                       
-lora_rank = 16                      # rank of the LoRA model, the higher, the larger memory footprint
 use_AdamW8bit = False               # if True, it will use AdamW8bit optimizer
 hps_version = "v2.1"                # version of the HPS model
 num_train_epochs = 200              # number of training epochs

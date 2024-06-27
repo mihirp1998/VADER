@@ -6,12 +6,12 @@ config='configs/inference_t2v_512_v2.0.yaml'
 prompt_file="prompts/test_prompts.txt"
 res_dir="results"
 
-accelerate launch --num_processes 1 --main_process_port 29523 scripts/main/train_t2v_lora.py \
+accelerate launch --num_processes 4 --main_process_port 29523 scripts/main/train_t2v_lora.py \
 --seed 200 \
 --mode 'base' \
 --ckpt_path $ckpt \
 --config $config \
---height 384 --width 512 \
+--height 320 --width 512 \
 --unconditional_guidance_scale 12.0 \
 --ddim_steps 25 \
 --ddim_eta 1.0 \
