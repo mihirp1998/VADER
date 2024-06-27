@@ -21,18 +21,6 @@ def fetch_requirements(paths) -> List[str]:
             requirements += [r.strip() for r in fd.readlines()]
     return requirements
 
-
-def fetch_readme() -> str:
-    """
-    This function reads the README.md file in the current directory.
-
-    Returns:
-        The lines in the README file.
-    """
-    with open("README.md", encoding="utf-8") as f:
-        return f.read()
-
-
 setup(
     name="opensora",
     version="1.2.0",
@@ -58,7 +46,6 @@ setup(
         )
     ),
     description="Democratizing Efficient Video Production for All",
-    long_description=fetch_readme(),
     long_description_content_type="text/markdown",
     license="Apache Software License 2.0",
     url="https://github.com/hpcaitech/Open-Sora",

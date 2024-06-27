@@ -33,7 +33,7 @@ We have made significant progress towards building foundational video diffusion 
 ## Installation
 
 Create Conda environments for VideoCrafter, Open-Sora, and ModelScope using the following commands:
-#### 📀 Videocrafter
+#### 📀 VideoCrafter
 ```bash
 cd VideoCrafter
 conda create -n vader_videocrafter python=3.8.5
@@ -74,7 +74,7 @@ rm -r HPSv2
 ```
 
 ## Usage
-### 📀 Videocrafter
+### 📀 VideoCrafter
 #### 🔧 Training
 For our experiments, we used 4 A100s- 40GB RAM to run our code.
 
@@ -203,7 +203,7 @@ lora_path=media_vis/good-voice-252/checkpoint-592/lora
 ```
 
 
-### Acknowledgement
+## Acknowledgement
 
 Our codebase is directly built on top of [VideoCrafter](https://github.com/AILab-CVC/VideoCrafter), [Open-Sora](https://github.com/hpcaitech/Open-Sora), and [Animate Anything](https://github.com/alibaba/animate-anything/). We would like to thank the authors for open-sourcing their code.
 
