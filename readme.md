@@ -33,11 +33,45 @@ We have made significant progress towards building foundational video diffusion 
 ## Code
 
 ### Installation 
-Create a conda environment with the following command:
+Create a conda environment for VideoCrafter, Open-Sora, and ModelScope respectively with the following commands:
+#### 🎬 Videocrafter
 ```bash
+cd VideoCrafter
+conda create -n videocrafter python=3.8.5
+conda activate videocrafter
+pip install -r requirements.txt
+git clone https://github.com/tgxs002/HPSv2.git
+cd HPSv2/
+pip install .
+cd ..
+rm -r HPSv2
+```
+
+#### 🎬 Open-Sora
+```bash
+cd Open-Sora
+conda create -n opensora python=3.9
+conda activate opensora
+pip install -r requirements/requirements-cu121.txt
+pip install -v -e .
+git clone https://github.com/tgxs002/HPSv2.git
+cd HPSv2/
+pip install .
+cd ..
+rm -r HPSv2
+```
+
+#### 🎬 ModelScope
+```bash
+cd ModelScope
 conda create -n vader python=3.10
 conda activate vader
 pip install -r requirements.txt
+git clone https://github.com/tgxs002/HPSv2.git
+cd HPSv2/
+pip install .
+cd ..
+rm -r HPSv2
 ```
 
 ### Training Code
