@@ -172,54 +172,34 @@ sh script/run_text2video_inference.sh
     - Most of the arguments are the same as the training process. The main difference is that `is_vader_training` should be set to `False`. The `--lora_ckpt_path` should be set to the path of the pretrained LoRA model. Otherwise, the original Open-Sora model will be used for inference.
 
 ### 🎥 ModelScope
-The current code can work on a single GPU with VRAM > 14GBs. The code can be further optimized to work with even lesser VRAM with deepspeed and CPU offloading.
-For our experiments, we used 4 A100s- 40GB RAM to run our code.
-
-#### Aesthetic Reward model.
-Currently we early stop the code to prevent overfitting, however feel free to play with the `num_epochs` variable as per your needs.
-
+#### 🔧 Training
+The current code can work on a single GPU with VRAM > 14GBs. The code can be further optimized to work with even lesser VRAM with deepspeed and CPU offloading. For our experiments, we used 4 A100s- 40GB RAM to run our code.
 ```bash
-accelerate launch --num_processes 4 train_t2v_lora.py gradient_accumulation_steps=4 prompt_fn=hps_custom reward_fn=aesthetic
+cd ModelScope
+sh run_text2video_train.sh
 ```
-
-If you are number of GPUs bottlenecked, increase the  `gradient_accumulation_steps`, while reducing the `num_processes` by an equivalent factor:
-
-
-```bash
-accelerate launch --num_processes 1 train_t2v_lora.py gradient_accumulation_steps=16 prompt_fn=hps_custom reward_fn=aesthetic
-```
-
-#### HPSv2 Reward model.
-
-```bash
-accelerate launch --num_processes 4 train_t2v_lora.py gradient_accumulation_steps=4 prompt_fn=hps_custom reward_fn=hps
-```
-
-If you are number of GPUs bottlenecked, increase the  `gradient_accumulation_steps`, while reducing the `num_process` by an equivalent factor:
-
-
-```bash
-accelerate launch --num_processes 1 train_t2v_lora.py gradient_accumulation_steps=16 prompt_fn=hps_custom reward_fn=hps
-```
-
-#### Video Action Classification Reward model.
-
-
-```bash
-accelerate launch --num_processes 4 train_t2v_lora.py gradient_accumulation_steps=4 prompt_fn=hps_custom reward_fn=hps
-```
+- `ModelScope/train_t2v_lora.py` is a script for fine-tuning ModelScope using VADER via LoRA.
+    - `--num_processes` is the number of processes for Accelerator. It is recommended to set it to the number of GPUs.
+    - `gradient_accumulation_steps` can be increased while reducing the `--num_processes` to alleviate bottleneck caused by the number of GPUs.
+    - `prompt_fn` is the prompt function, which can be the name of any functions in Core/prompts.py, like `'chatgpt_custom_instruments'`, `'chatgpt_custom_animal_technology'`, `'chatgpt_custom_ice'`, `'nouns_activities'`, etc. Note: If you set `--prompt_fn 'nouns_activities'`, you have to provide`--nouns_file` and `--nouns_file`, which will randomly select a noun and an activity from the files and form them into a single sentence as a prompt.
+    - `reward_fn` is the reward function, which can be selected from `'aesthetic'`, `'hps'`, and `'actpred'`.
+- `ModelScope/config_t2v/config.yaml` is the configuration file for training. You can modify the configuration file to change the training settings following the comments in that file.
 
 
 
-### Evaluation & Checkpoints
+#### 📐 Evaluation & Checkpoints
 Please find the checkpoints for Aesthetic reward function [here](https://drive.google.com/file/d/1r7291awe3z37drfKyxLyqcNq6dHl6Egf/view?usp=sharing) and Hps-v2 reward function [here](https://drive.google.com/file/d/1nvSxwxf-OnDrKq4ob-j5islfUSif8lQb/view?usp=sharing)
 
 Evaluates the model checkpoint, as per the `resume_from` variable in the config file.  Evaluation includes calculating the reward and storing/uploading the images to local/wandb.
 
-#### normal evaluation.
+##### normal evaluation.
 
 ```bash
-accelerate launch --num_processes 1 train_t2v_lora.py only_val=True num_only_val_itrs=1000 val_batch_size=4 lora_path=media_vis/good-voice-252/checkpoint-592/lora 
+accelerate launch --num_processes 1 train_t2v_lora.py \
+only_val=True \
+num_only_val_itrs=1000 \
+val_batch_size=4 \
+lora_path=media_vis/good-voice-252/checkpoint-592/lora 
 ```
 
 
