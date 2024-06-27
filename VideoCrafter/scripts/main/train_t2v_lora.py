@@ -64,12 +64,10 @@ def get_parser():
     parser.add_argument("--mode", default="base", type=str, help="which kind of inference mode: {'base', 'i2v'}")
     parser.add_argument("--ckpt_path", type=str, default=None, help="checkpoint path")
     parser.add_argument("--config", type=str, help="config (yaml) path")
-    parser.add_argument("--prompt_file", type=str, default=None, help="a text file containing many prompts")
     parser.add_argument("--savefps", type=str, default=10, help="video fps to generate")
     parser.add_argument("--n_samples", type=int, default=1, help="num of samples per prompt",)
     parser.add_argument("--ddim_steps", type=int, default=50, help="steps of ddim if positive, otherwise use DDPM",)
     parser.add_argument("--ddim_eta", type=float, default=1.0, help="eta for ddim sampling (0.0 yields deterministic sampling)",)
-    parser.add_argument("--bs", type=int, default=1, help="batch size for inference")
     parser.add_argument("--height", type=int, default=512, help="image height, in pixel space")
     parser.add_argument("--width", type=int, default=512, help="image width, in pixel space")
     parser.add_argument("--frames", type=int, default=-1, help="frames num to inference")
@@ -83,11 +81,11 @@ def get_parser():
     parser.add_argument("--val_batch_size", type=int, default=1, help="batch size for validation")
     parser.add_argument("--num_val_runs", type=int, default=1, help="total number of validation samples = num_val_runs * num_gpus * num_val_batch")
     parser.add_argument("--train_batch_size", type=int, default=1, help="batch size for training")
-    parser.add_argument("--reward_fn", type=str, default="aesthetic", help="reward function: 'aesthetic', 'hps', 'aesthetic_hps', 'pick_score', 'rainy', 'snowy', 'objectDetection'")
-    parser.add_argument("--compression_model_path", type=str, default='../assets/compression_reward.pt', help="compression model path")
-    # default is "dog." for grounding-dino model . Remember to add "." at the end of the object name for grounding-dino model. 
-    # But for yolos model, do not add "." at the end of the object name.
-    parser.add_argument("--target_object", type=str, default="dog", help="target object for object detection reward function")
+    parser.add_argument("--reward_fn", type=str, default="aesthetic", help="reward function: 'aesthetic', 'hps', 'aesthetic_hps', 'pick_score', 'rainy', 'snowy', 'objectDetection', 'actpred', 'compression'")
+    parser.add_argument("--compression_model_path", type=str, default='../assets/compression_reward.pt', help="compression model path") # The compression model is used only when reward_fn is 'compression'
+    # The "book." is for grounding-dino model . Remember to add "." at the end of the object name for grounding-dino model. 
+    # But for yolos model, do not add "." at the end of the object name. Instead, you should set the object name to "book" for example.
+    parser.add_argument("--target_object", type=str, default="book", help="target object for object detection reward function")
     parser.add_argument("--detector_model", type=str, default="yolos-base", help="object detection model", 
                             choices=["yolos-base", "yolos-tiny", "grounding-dino-base", "grounding-dino-tiny"])
     parser.add_argument("--hps_version", type=str, default="v2.1", help="hps version: 'v2.0', 'v2.1'")

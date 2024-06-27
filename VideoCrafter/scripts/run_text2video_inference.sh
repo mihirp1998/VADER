@@ -11,13 +11,10 @@ accelerate launch --num_processes 1 --main_process_port 29523 scripts/main/train
 --mode 'base' \
 --ckpt_path $ckpt \
 --config $config \
---n_samples 1 \
---bs 1 --height 384 --width 512 \
+--height 384 --width 512 \
 --unconditional_guidance_scale 12.0 \
 --ddim_steps 25 \
 --ddim_eta 1.0 \
---prompt_file $prompt_file \
---fps 24 \
 --frames 24 \
 --prompt_fn 'chatgpt_custom_cute' \
 --val_batch_size 2 \

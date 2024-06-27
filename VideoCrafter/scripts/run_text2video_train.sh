@@ -6,19 +6,16 @@ config='configs/inference_t2v_512_v2.0.yaml'
 prompt_file="prompts/test_prompts.txt"
 res_dir="results"
 
-accelerate launch --num_processes 1 --main_process_port 29519 scripts/main/train_t2v_lora.py \
+accelerate launch --num_processes 4 --main_process_port 29500 scripts/main/train_t2v_lora.py \
 --seed 300 \
 --mode 'base' \
 --ckpt_path $ckpt \
 --config $config \
---n_samples 1 \
---bs 1 --height 320 --width 512 \
+--height 320 --width 512 \
 --unconditional_guidance_scale 12.0 \
 --ddim_steps 25 \
 --ddim_eta 1.0 \
---prompt_file $prompt_file \
 --frames 12 \
---fps 24 \
 --prompt_fn 'chatgpt_custom_instruments' \
 --gradient_accumulation_steps 4 \
 --num_train_epochs 200 \
