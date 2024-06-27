@@ -22,6 +22,14 @@ We have made significant progress towards building foundational video diffusion 
 - [x] Adaptation of ModelScope Text2Video Model
 - [ ] Adaptation of Stable Video Diffusion Image2Video Model
 
+## Demo
+|         |          |       |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="assets/videos/8.gif" width=""> | <img src="assets/videos/5.gif" width=""> | <img src="assets/videos/7.gif" width=""> |
+| <img src="assets/videos/10.gif" width=""> | <img src="assets/videos/3.gif" width=""> | <img src="assets/videos/4.gif" width=""> |
+| <img src="assets/videos/9.gif" width=""> | <img src="assets/videos/1.gif" width=""> | <img src="assets/videos/11.gif" width=""> |
+
+
 ## Code
 
 ### Installation 
