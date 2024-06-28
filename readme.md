@@ -75,6 +75,8 @@ rm -r HPSv2
 
 ## Usage
 ### 📀 VideoCrafter
+- Please, download pretrained Text-to-Video [VideoCrafter2](https://huggingface.co/VideoCrafter/VideoCrafter2/blob/main/model.ckpt) model via Hugging Face, and put the `model.ckpt` in `VADER/VideoCrafter/checkpoints/base_512_v2/model.ckpt`.
+
 #### 🔧 Training
 For our experiments, we used 4 A100s- 40GB RAM to run our code.
 
@@ -109,7 +111,7 @@ sh script/run_text2video_train.sh
     - `--wandb_entity` is the entity of wandb, whose default value is `''`.
     - `--use_AdamW8bit` is set to `True` if you want to use AdamW8bit optimizer.
     - `--inference_only` is set to `False` if you only want to do training.
-    - `--backprop_mode` is to control when we gather the gradient during backpropagation in LoRA. It could be `'last'` (gather the gradient only at the last DDIM step), `'rand'` (gather the gradient at random step of DDIM), and `'specific'` (do not gather the gradient at the 15th DDIM step).
+    - `--backprop_mode` is to control when we gather the gradient during backpropagation in LoRA. It could be `'last'` (gather the gradient only at the last DDIM step), `'rand'` (gather the gradient at a random step of DDIM), and `'specific'` (gather the gradient at the 15th DDIM step).
 
 
 #### 📺 Inference
@@ -158,7 +160,7 @@ sh script/run_text2video_train.sh
     - `hps_version` is the version of HPS, which can be `'v2.1'` or `'v2.0'`.
     - `num_train_epochs` is the number of training epochs.
     - `max_train_steps` is the maximum number of training steps.
-    - `backprop_mode` is to control when we gather the gradient during backpropagation in LoRA. It could be `'last'` (gather the gradient only at the last DDIM step), `'rand'` (gather the gradient at random step of DDIM), and `'specific'` (do not gather the gradient at the 15th DDIM step).
+    - `backprop_mode` is to control when we gather the gradient during backpropagation in LoRA. It could be `'last'` (gather the gradient only at the last DDIM step), `'rand'` (gather the gradient at a random step of DDIM), and `'specific'` (gather the gradient at the 15th DDIM step).
     - `decode_frame` is to control which frame of video to decode in the training process. It could be `'-1'` (a random frame), `'fml'` (first, middle, and last frames), `'all'` (all frames), and `'alt'` (alternate frames). It could also be any number in string type (not int type) like `'3'`, `'10'`, etc. Multiple frames mode can only be used when Actpred reward function is enabled.
     - `is_sample_preview` is set to `True` if you want to generate and save preview videos.
     - `grad_checkpoint` is set to `True` if you want to enable gradient checkpointing to save memory.

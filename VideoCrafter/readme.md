@@ -26,6 +26,8 @@ We have made significant progress towards building foundational video diffusion 
 
 ## Usage
 ### 📀 VideoCrafter
+- Please, download pretrained Text-to-Video [VideoCrafter2](https://huggingface.co/VideoCrafter/VideoCrafter2/blob/main/model.ckpt) model via Hugging Face, and put the `model.ckpt` in `VADER/VideoCrafter/checkpoints/base_512_v2/model.ckpt`.
+
 #### 🔧 Training
 For our experiments, we used 4 A6000s- 48GB RAM to run our code.
 
@@ -60,7 +62,7 @@ sh script/run_text2video_train.sh
     - `--wandb_entity` is the entity of wandb, whose default value is `''`.
     - `--use_AdamW8bit` is set to `True` if you want to use AdamW8bit optimizer.
     - `--inference_only` is set to `False` if you only want to do training.
-    - `--backprop_mode` is to control when we gather the gradient during backpropagation in LoRA. It could be `'last'` (gather the gradient only at the last DDIM step), `'rand'` (gather the gradient at random step of DDIM), and `'specific'` (do not gather the gradient at the 15th DDIM step).
+    - `--backprop_mode` is to control when we gather the gradient during backpropagation in LoRA. It could be `'last'` (gather the gradient only at the last DDIM step), `'rand'` (gather the gradient at a random step of DDIM), and `'specific'` (gather the gradient at the 15th DDIM step).
 
 
 #### 📺 Inference
@@ -72,6 +74,79 @@ sh script/run_text2video_inference.sh
     - Most of the arguments are the same as the training process. The main difference is that `--inference_only` should be set to `True`.
     - `--lora_ckpt_path` is required to set to the path of the pretrained LoRA model. Otherwise, the original VideoCrafter model will be used for inference.
 
+
+## 💡 Tutorial
+This section is to provide a tutorial on how to implement the VADER method on VideoCrafter by yourself. We will provide a step-by-step guide to help you understand the implementation details. Thus, you can easily adapt the VADER method to later versions of VideCrafter. This tutorial is based on the VideoCrafter2.
+
+### Step 1: Install the dependencies
+First, you need to install the dependencies according to the [VideoCrafter](https://github.com/AILab-CVC/VideoCrafter) repository. You can also follow the instructions in the repository to install the dependencies.
+```bash
+conda create -n videocrafter python=3.8.5
+conda activate videocrafter
+pip install -r requirements.txt
+```
+
+You have to download pretrained Text-to-Video [VideoCrafter2](https://huggingface.co/VideoCrafter/VideoCrafter2/blob/main/model.ckpt) model via Hugging Face, and put the `model.ckpt` in `VideoCrafter/checkpoints/base_512_v2/model.ckpt`.
+
+There are a list of extra dependencies that you need to install for VADER. You can install them by running the following command.
+```bash
+# Install the HPS
+git clone https://github.com/tgxs002/HPSv2.git
+cd HPSv2/
+pip install .
+cd ..
+rm -r HPSv2
+
+# Install the dependencies
+pip install albumentations \
+hpsv2 \
+peft \
+bitsandbytes \
+accelerate \
+inflect \
+wandb \
+ipdb \
+pytorch_lightning
+```
+
+### Step 2: Transfer VADER scripts
+You can copy our `VADER/VideoCrafter/scripts/main/train_t2v_lora.py` to the `VideoCrafter/scripts/evaluation/` directory of VideoCrafter. It is better to copy our `run_text2video_train.sh` and `run_text2video_inference.sh` to the directionary `VideoCrafter/scripts/` as well. Then, you need to copy All the files in `VADER/Core/` and `VADER/assets/` to the parent directory of VideoCrafter, which means `Core/`, `assets` and `VideoCrafter/` should be in the same directory. Now, you may have a directory structure like:
+```bash
+.
+├── Core
+│   ├── ...
+├── VideoCrafter
+│   ├── scripts
+│   │   ├── evaluation
+│   │   │   ├── train_t2v_lora.py
+│   │   ├── run_text2video_train.sh
+│   │   ├── run_text2video_inference.sh
+│   ├── checkpoints
+│   │   ├── base_512_v2
+│   │   │   ├── model.ckpt
+├── assets
+│   ├── ...
+```
+
+### Step 3: Modify the VideoCrafter code
+You need to modify the VideoCrafter code to adapt the VADER method. You can follow the instructions below to modify the code.
+
+- Modify the `batch_ddim_sampling()` function in `VideoCrafter/scripts/evaluation/funcs.py` as our implementation in `VADER/VideoCrafter/scripts/main/funcs.py`.
+- Modify the `DDIMSampler.__init__()`, `DDIMSampler.sample()` and `DDIMSampler.ddim_sampling` functions in  `VideoCrafter\lvdm\models\samplers\ddim.py` as our implementation in `VADER/VideoCrafter\lvdm\models\samplers\ddim.py`.
+- Comment out the `@torch.no_grad()` before `DDIMSampler.sample()`, `DDIMSampler.ddim_sampling`, and `DDIMSampler.p_sample_ddim()` in `VideoCrafter\lvdm\models\samplers\ddim.py`. Also, comment out the `@torch.no_grad()` before `LatentDiffusion.decode_first_stage_2DAE()` in `VideoCrafter\lvdm\models\ddpm3d.py`.
+- Because we have commented out the `@torch.no_grad()`, you can add `with torch.no_grad():` at some places in `VideoCrater/scripts/evaluation/inference.py` to avoid the gradient calculation.
+
+### Step 4: Ready to Train
+Now you have all the files in the right place and modified the VideoCrafter source code. You can run the training script by running the following command.
+```bash
+cd VideoCrafter
+
+# training
+sh script/run_text2video_train.sh
+
+# or inference
+sh script/run_text2video_inference.sh
+```
 
 
 ## Acknowledgement

@@ -16,7 +16,7 @@ from lvdm.models.samplers.ddim import DDIMSampler
 def batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=50, ddim_eta=1.0,\
                         cfg_scale=1.0, temporal_cfg_scale=None, backprop_mode=None, decode_frame='-1', **kwargs):
     ddim_sampler = DDIMSampler(model)
-    if backprop_mode is not None:   # it is for training now, backprop_mode != None also means training mode
+    if backprop_mode is not None:   # it is for training now, backprop_mode != None also means vader training mode
         ddim_sampler.backprop_mode = backprop_mode
         ddim_sampler.training_mode = True
     uncond_type = model.uncond_type

@@ -246,8 +246,7 @@ class DDIMSampler(object):
                       unconditional_guidance_scale=1., unconditional_conditioning=None,
                       uc_type=None, conditional_guidance_scale_temporal=None, **kwargs):
         b, *_, device = *x.shape, x.device
-        # print("===6.0===", torch.cuda.memory_allocated()/1024/1024,"==", torch.cuda.memory_reserved()/1024/1024)
-        # st()
+        
         if x.dim() == 5:
             is_video = True
         else:
