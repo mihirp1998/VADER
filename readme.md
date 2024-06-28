@@ -19,7 +19,9 @@ We have made significant progress towards building foundational video diffusion 
 
 
 ## Features
-- [x] Adaptation of ModelScope Text2Video Model
+- [✅] Adaptation of VideoCrafter2 Text-to-Video Model
+- [✅] Adaptation of Open-Sora V1.2 Text-to-Video Model
+- [✅] Adaptation of ModelScope Text-to-Video Model
 - [ ] Adaptation of Stable Video Diffusion Image2Video Model
 
 ## Demo
@@ -30,39 +32,103 @@ We have made significant progress towards building foundational video diffusion 
 | <img src="assets/videos/9.gif" width=""> | <img src="assets/videos/1.gif" width=""> | <img src="assets/videos/11.gif" width=""> |
 
 
-## Installation
+## Usage
 
-Create Conda environments for VideoCrafter, Open-Sora, and ModelScope using the following commands:
-#### 📀 VideoCrafter
+
+### 🌟 VADER-VideoCrafter
+
+We **highly recommend** proceeding with the VADER-VideoCrafter model first, which performs better.
+
+#### ⚙️ Installation
+Assuming you are in the `VADER/` directory, you are able to create a Conda environments for VADER-VideoCrafter using the following commands:
 ```bash
-cd VideoCrafter
-conda create -n vader_videocrafter python=3.8.5
+cd VADER-VideoCrafter
+conda create -n vader_videocrafter python=3.10
 conda activate vader_videocrafter
+conda install pytorch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 pytorch-cuda=12.1 -c pytorch -c nvidia
+conda install xformers -c xformers
 pip install -r requirements.txt
 git clone https://github.com/tgxs002/HPSv2.git
 cd HPSv2/
-pip install .
+pip install -e .
 cd ..
-rm -r HPSv2
 ```
 
-#### 🎬 Open-Sora
+
+- We are using the pretrained Text-to-Video [VideoCrafter2](https://huggingface.co/VideoCrafter/VideoCrafter2/blob/main/model.ckpt) model via Hugging Face. If you unfortunately find the model is not automatically downloaded when you running inference or training script, you can manually download it and put the `model.ckpt` in `VADER/VADER-VideoCrafter/checkpoints/base_512_v2/model.ckpt`.
+
+
+#### 📺 Inference
+Assuming you are in the `VADER/` directory, you are able to do inference using the following commands:
 ```bash
-cd Open-Sora
+cd VADER-VideoCrafter
+sh scripts/run_text2video_inference.sh
+```
+- We have tested on PyTorch 2.3.0 and CUDA 12.1. The inferece script works on a single GPU with 16GBs VRAM, when we set `val_batch_size=1` and use `fp16` mixed precision. It should also work with recent PyTorch and CUDA versions.
+- `VADER/VADER-VideoCrafter/scripts/main/train_t2v_lora.py` is a script for inference of the VideoCrafter2 using VADER via LoRA.
+    - Most of the arguments are the same as the training process. The main difference is that `--inference_only` should be set to `True`.
+    - `--lora_ckpt_path` is required to set to the path of the pretrained LoRA model. Otherwise, the original VideoCrafter model will be used for inference.
+
+#### 🔧 Training
+Assuming you are in the `VADER/` directory, you are able to train the model using the following commands:
+
+```bash
+cd VADER-VideoCrafter
+sh scripts/run_text2video_train.sh
+```
+- Our experiments are conducted on PyTorch 2.3.0 and CUDA 12.1 while using 4 A6000s (48GB RAM). It should also work with recent PyTorch and CUDA versions. The training script have been tested on a single GPU with 16GBs VRAM, when we set `train_batch_size=1 val_batch_size=1` and use `fp16` mixed precision.
+- `VADER/VADER-VideoCrafter/scripts/main/train_t2v_lora.py` is also a script for fine-tuning the VideoCrafter2 using VADER via LoRA.
+    - You can read the VADER-VideoCrafter [documentation](documentation/VADER-VideoCrafter.md) to understand the usage of arguments.
+
+---
+
+### 🎬 VADER-Open-Sora
+#### ⚙️ Installation
+```bash
+cd VADER-Open-Sora
 conda create -n vader_opensora python=3.9
 conda activate vader_opensora
 pip install -r requirements/requirements-cu121.txt
 pip install -v -e .
 git clone https://github.com/tgxs002/HPSv2.git
 cd HPSv2/
-pip install .
+pip install -e .
 cd ..
-rm -r HPSv2
 ```
 
-#### 🎥 ModelScope
+#### 📺 Inference
+Assuming you are in the `VADER/` directory, you are able to do inference using the following commands:
 ```bash
-cd ModelScope
+cd VADER-Open-Sora
+sh scripts/run_text2video_inference.sh
+```
+- `VADER/VADER-Open-Sora/scripts/train_t2v_lora.py` is a script for do inference via the Open-Sora 1.2 using VADER.
+    - `--num-frames`, `'--resolution'`, `'fps'` and `'aspect-ratio'` are inherited from the original Open-Sora model. In short, you can set `'--num-frames'` as `'2s'`, `'4s'`, `'8s'`, and `'16s'`. Available resolutions are `'240p'`, `'360p'`, `'480p'`, and `'720p'`. The default value of `'fps'` is `24` and `'aspect-ratio'` is `3:4`. Please refer to the original [Open-Sora](https://github.com/hpcaitech/Open-Sora) repository for more details. One thing to keep in mind, for instance, is that if you set `--num-frames` to `2s` and `--resolution` to `'240p'`, it is better to use `bf16` mixed precision instead of `fp16`. Otherwise, the model may generate noise videos.
+    - `--prompt-path` is the path of the prompt file. Unlike VideoCrafter, we do not provide prompt function for Open-Sora. Instead, you can provide a prompt file, which contains a list of prompts.
+    - `--num-processes` is the number of processes for Accelerator. It is recommended to set it to the number of GPUs.
+- `VADER/VADER-Open-Sora/configs/opensora-v1-2/vader/vader_inferece.py` is the configuration file for inference. You can modify the configuration file to change the inference settings following the guidance in the [documentation](documentation/VADER-Open-Sora.md).
+    - The main difference is that `is_vader_training` should be set to `False`. The `--lora_ckpt_path` should be set to the path of the pretrained LoRA model. Otherwise, the original Open-Sora model will be used for inference.
+
+
+#### 🔧 Training
+Assuming you are in the `VADER/` directory, you are able to train the model using the following commands:
+
+```bash
+cd VADER-Open-Sora
+sh scripts/run_text2video_train.sh
+```
+- `VADER/VADER-Open-Sora/scripts/train_t2v_lora.py` is a script for fine-tuning the Open-Sora 1.2 using VADER via LoRA.
+    - The arguments are the same as the inference process above.
+- `VADER/VADER-Open-Sora/configs/opensora-v1-2/vader/vader_train.py` is the configuration file for training. You can modify the configuration file to change the training settings.
+    - You can read the VADER-Open-Sora [documentation](documentation/VADER-Open-Sora.md) to understand the usage of arguments.
+
+---
+
+### 🎥 ModelScope
+#### ⚙️ Installation
+Assuming you are in the `VADER/` directory, you are able to create a Conda environments for VADER-ModelScope using the following commands:
+```bash
+cd VADER-ModelScope
 conda create -n vader_modelscope python=3.10
 conda activate vader_modelscope
 pip install -r requirements.txt
@@ -73,136 +139,29 @@ cd ..
 rm -r HPSv2
 ```
 
-## Usage
-### 📀 VideoCrafter
-- Please, download pretrained Text-to-Video [VideoCrafter2](https://huggingface.co/VideoCrafter/VideoCrafter2/blob/main/model.ckpt) model via Hugging Face, and put the `model.ckpt` in `VADER/VideoCrafter/checkpoints/base_512_v2/model.ckpt`.
-
-#### 🔧 Training
-For our experiments, we used 4 A100s- 40GB RAM to run our code.
-
-```bash
-cd VideoCrafter
-sh script/run_text2video_train.sh
-```
-- `VideoCrafter/scripts/main/train_t2v_lora.py` is a script for fine-tuning the VideoCrafter2 using VADER via LoRA.
-    - `--height` and `--width` are the height and width of the video frames respectively.
-    - `--n_samples` is the number of samples per prompt. It must be `1` during training process.
-    - `--frames` is the number of frames to inference.
-    - `--prompt_fn` is the prompt function, which can be the name of any functions in Core/prompts.py, like `'chatgpt_custom_instruments'`, `'chatgpt_custom_animal_technology'`, `'chatgpt_custom_ice'`, `'nouns_activities'`, etc. Note: If you set `--prompt_fn 'nouns_activities'`, you have to provide`--nouns_file` and `--nouns_file`, which will randomly select a noun and an activity from the files and form them into a single sentence as a prompt.
-    - `--gradient_accumulation_steps` can be increased while reducing the `--num_processes` to alleviate bottleneck caused by the number of GPUs.
-    - `--num_train_epochs` is the number of training epochs.
-    - `--train_batch_size` is the batch size for training.
-    - `--val_batch_size` is the batch size for validation.
-    - `--num_val_runs` is the number of validation runs. The total number of validation videos generated will be `num_val_runs * val_batch_size * num_processes`.
-    - `--reward_fn` is the reward function, which can be selected from `'aesthetic'`, `'hps'`, `'aesthetic_hps'`, `'pick_score'`, `'objectDetection'`, and `'actpred'`.
-    - `--hps_version` is the version of HPS, which can be `'v2.1'` or `'v2.0'`.
-    - `--decode_frame` is to control which frame of video to decode in the training process. It could be `'-1'` (a random frame), `'fml'` (first, middle, and last frames), `'all'` (all frames), and `'alt'` (alternate frames). It could also be any number in string type (not int type) like `'3'`, `'10'`, etc. Multiple frames mode can only be used when Actpred reward function is enabled.
-    - `--lr` is to control the learning rate.
-    - `--validation_steps` is to control the frequency of validation, e.g., `1` means that we will generate validation videos every `1*num_processes` steps.
-    - `--checkpointing_steps` is to control the frequency of saving checkpoints, e.g., `1` means that we will save checkpoints of LoRA model every `1*num_processes` steps.
-    - `--lora_rank` is the rank of LoRA. The larger the value, the more memory is used.
-    - `--lora_ckpt_path` is the path of the pretrained LoRA model. If it is not provided, the model will be initialized from scratch.
-    - `--is_sample_preview` is set to `True` if you want to generate and save preview videos.
-    - `--detector_model` is used to switched the detection model among `'yolos-base'`, `'yolos-tiny'`, `'grounding-dino-base'`, and `'grounding-dino-tiny'`.
-    - `--target_object` is used only when the reward function is `'objectDetection'`. It is the target object for object detection. The default value is `'book'`, which is used for YOLO models. Please do not add "." at the end of the object name for any YOLO models. However, if you are using grounding-dino model, you should instead set the object name to `'book.'` for example.
-    - `--mixed_precision` is set to `'fp16'` as default. You can also set it to `'no'`, `'bf16'` or `'fp8'`.
-    - `--project_dir` is the directory to save the checkpoints and sampled videos.
-    - `--use_wandb` is set to `True` if you want to use wandb to log the training process.
-    - `--wandb_entity` is the entity of wandb, whose default value is `''`.
-    - `--use_AdamW8bit` is set to `True` if you want to use AdamW8bit optimizer.
-    - `--inference_only` is set to `False` if you only want to do training.
-    - `--backprop_mode` is to control when we gather the gradient during backpropagation in LoRA. It could be `'last'` (gather the gradient only at the last DDIM step), `'rand'` (gather the gradient at a random step of DDIM), and `'specific'` (gather the gradient at the 15th DDIM step).
-
-
 #### 📺 Inference
+Assuming you are in the `VADER/` directory, you are able to do inference using the following commands:
 ```bash
-cd VideoCrafter
-sh script/run_text2video_inference.sh
+cd VADER-ModelScope
+sh scripts/run_text2video_inference.sh
 ```
-- `VideoCrafter/scripts/main/train_t2v_lora.py` is also a script for inference of the VideoCrafter2 using VADER via LoRA.
-    - Most of the arguments are the same as the training process. The main difference is that `--inference_only` should be set to `True`.
-    - `--lora_ckpt_path` is required to set to the path of the pretrained LoRA model. Otherwise, the original VideoCrafter model will be used for inference.
 
+- Note: we do note set `lora_path` in the original inference script. You can set `lora_path` to the path of the pretrained LoRA model if you have one.
 
-### 🎬 Open-Sora
-#### 🔧 Training
-For our experiments, we used 4 A100s- 40GB RAM to run our code.
-
-```bash
-cd Open-Sora
-sh script/run_text2video_train.sh
-```
-- `Open-Sora/scripts/train_t2v_lora.py` is a script for fine-tuning the Open-Sora 1.2 using VADER via LoRA.
-    - `--num-frames`, `'--resolution'`, `'fps'` and `'aspect-ratio'` are inherited from the original Open-Sora model. In short, you can set `'--num-frames'` as `'2s'`, `'4s'`, `'8s'`, and `'16s'`. Available resolutions are `'240p'`, `'360p'`, `'480p'`, and `'720p'`. The default value of `'fps'` is `24` and `'aspect-ratio'` is `3:4`. Please refer to the original [Open-Sora](https://github.com/hpcaitech/Open-Sora) repository for more details. One thing to keep in mind, for instance, is that if you set `--num-frames` to `2s` and `--resolution` to `'240p'`, it is better to use `bf16` mixed precision instead of `fp16`. Otherwise, the model may generate noise videos.
-    - `--prompt-path` is the path of the prompt file. Unlike VideoCrafter, we do not provide prompt function for Open-Sora. Instead, you can provide a prompt file, which contains a list of prompts.
-    - `--num-processes` is the number of processes for Accelerator. It is recommended to set it to the number of GPUs.
-- `Open-Sora/configs/opensora-v1-2/vader/vader_train.py` is the configuration file for training. You can modify the configuration file to change the training settings.
-    - `is_vader_training` is set to `True` if you want to use VADER for training.
-    - `train_batch_size` is the batch size for training.
-    - `val_batch_size` is the batch size for validation.
-    - `num_val_runs` is the number of validation runs. The total number of validation videos generated will be `num_val_runs * val_batch_size * num_processes`.
-    - `seed` is the random seed.
-    - `lora_ckpt_path` is the path of the pretrained LoRA model. If it is not provided, the model will be initialized from scratch.
-    - `project_dir` is the directory to save the checkpoints and sampled videos.
-    - `lr` is to control the learning rate.
-    - `reward_fn` is the reward function, which can be selected from `'aesthetic'`, `'hps'`, `'aesthetic_hps'`, and `'pick_score'`.`
-    - `gradient_accumulation_steps` can be increased while reducing the `--num_processes` to alleviate bottleneck caused by the number of GPUs.
-    - `--lora_rank` is the rank of LoRA. The larger the value, the more memory is used.
-    - `dtype` is the data type of the model. It could be `'fp16'`, `'bf16'`, `'fp8'`, and `'fp32'`. For instance, it is recommended to use `'bf16'` for `'240p'` and `'360p'`.
-    - `mixed_precision` is set to `'bf16'` as default. You can also set it to `'no'`, `'fp16'` or `'fp8'`.
-    - `'logger_type'` is `'wandb'` as default. You can also set it to `'tensorboard'`.
-    - `--use_wandb` is set to `True` if you want to use wandb to log the training process.
-    - `wandb_entity` is the entity of wandb, whose default value is `''`.
-    - `--validation_steps` is to control the frequency of validation, e.g., `1` means that we will generate validation videos every `1*num_processes` steps.
-    - `--checkpointing_steps` is to control the frequency of saving checkpoints, e.g., `1` means that we will save checkpoints of LoRA model every `1*num_processes` steps.
-    - `debug` is set to `False` as default.
-    - `use_AdamW8bit` is set to `True` if you want to use AdamW8bit optimizer.
-    - `hps_version` is the version of HPS, which can be `'v2.1'` or `'v2.0'`.
-    - `num_train_epochs` is the number of training epochs.
-    - `max_train_steps` is the maximum number of training steps.
-    - `backprop_mode` is to control when we gather the gradient during backpropagation in LoRA. It could be `'last'` (gather the gradient only at the last DDIM step), `'rand'` (gather the gradient at a random step of DDIM), and `'specific'` (gather the gradient at the 15th DDIM step).
-    - `decode_frame` is to control which frame of video to decode in the training process. It could be `'-1'` (a random frame), `'fml'` (first, middle, and last frames), `'all'` (all frames), and `'alt'` (alternate frames). It could also be any number in string type (not int type) like `'3'`, `'10'`, etc. Multiple frames mode can only be used when Actpred reward function is enabled.
-    - `is_sample_preview` is set to `True` if you want to generate and save preview videos.
-    - `grad_checkpoint` is set to `True` if you want to enable gradient checkpointing to save memory.
-
-#### 📺 Inference
-```bash
-cd Open-Sora
-sh script/run_text2video_inference.sh
-```
-- `Open-Sora/scripts/train_t2v_lora.py` is also a script for do inference via the Open-Sora 1.2 using VADER.
-    - Most of the arguments are the same as the training process. The main difference is that `is_vader_training` should be set to `False`. The `--lora_ckpt_path` should be set to the path of the pretrained LoRA model. Otherwise, the original Open-Sora model will be used for inference.
-
-### 🎥 ModelScope
 #### 🔧 Training
 The current code can work on a single GPU with VRAM > 14GBs. The code can be further optimized to work with even lesser VRAM with deepspeed and CPU offloading. For our experiments, we used 4 A100s- 40GB RAM to run our code.
+
+Assuming you are in the `VADER/` directory, you are able to train the model using the following commands:
 ```bash
-cd ModelScope
-sh run_text2video_train.sh
+cd VADER-ModelScope
+sh scripts/run_text2video_train.sh
 ```
-- `ModelScope/train_t2v_lora.py` is a script for fine-tuning ModelScope using VADER via LoRA.
-    - `--num_processes` is the number of processes for Accelerator. It is recommended to set it to the number of GPUs.
-    - `gradient_accumulation_steps` can be increased while reducing the `--num_processes` to alleviate bottleneck caused by the number of GPUs.
+- `VADER/VADER-ModelScope/train_t2v_lora.py` is a script for fine-tuning ModelScope using VADER via LoRA.
+    - `gradient_accumulation_steps` can be increased while reducing the `--num_processes` of the accelerator to alleviate bottleneck caused by the number of GPUs. We tested with `gradient_accumulation_steps=4` and `--num_processes=4` on 4 A100s- 40GB RAM.
     - `prompt_fn` is the prompt function, which can be the name of any functions in Core/prompts.py, like `'chatgpt_custom_instruments'`, `'chatgpt_custom_animal_technology'`, `'chatgpt_custom_ice'`, `'nouns_activities'`, etc. Note: If you set `--prompt_fn 'nouns_activities'`, you have to provide`--nouns_file` and `--nouns_file`, which will randomly select a noun and an activity from the files and form them into a single sentence as a prompt.
     - `reward_fn` is the reward function, which can be selected from `'aesthetic'`, `'hps'`, and `'actpred'`.
-- `ModelScope/config_t2v/config.yaml` is the configuration file for training. You can modify the configuration file to change the training settings following the comments in that file.
+- `VADER/VADER-ModelScope/config_t2v/config.yaml` is the configuration file for training. You can modify the configuration file to change the training settings following the comments in that file.
 
-
-
-#### 📐 Evaluation & Checkpoints
-Please find the checkpoints for Aesthetic reward function [here](https://drive.google.com/file/d/1r7291awe3z37drfKyxLyqcNq6dHl6Egf/view?usp=sharing) and Hps-v2 reward function [here](https://drive.google.com/file/d/1nvSxwxf-OnDrKq4ob-j5islfUSif8lQb/view?usp=sharing)
-
-Evaluates the model checkpoint, as per the `resume_from` variable in the config file.  Evaluation includes calculating the reward and storing/uploading the images to local/wandb.
-
-##### normal evaluation.
-
-```bash
-accelerate launch --num_processes 1 train_t2v_lora.py \
-only_val=True \
-num_only_val_itrs=1000 \
-val_batch_size=4 \
-lora_path=media_vis/good-voice-252/checkpoint-592/lora 
-```
 
 ## 💡 Tutorial
 This section is to provide a tutorial on how to implement the VADER method on VideoCrafter and Open-Sora by yourself. We will provide a step-by-step guide to help you understand the modification details. Thus, you can easily adapt the VADER method to later versions of VideCrafter.
@@ -221,3 +180,9 @@ If you find this work useful in your research, please cite:
 ```bibtex
 
 ```
+
+<style>
+hr {
+ border-style: dashed !important;
+}
+</style>

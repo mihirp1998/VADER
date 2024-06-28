@@ -5,119 +5,119 @@
 **/*.jpg
 **/*.mp4
 
-# ModelScope
-ModelScope/outputs/
-ModelScope/media_vis/
-ModelScope/pretrained_models/
-ModelScope/wandb/
-ModelScope/data/
-ModelScope/__pycache__/
-ModelScope/media_vis/
-ModelScope/shan-myout/
-ModelScope/weights/
-ModelScope/vader_baselines_ckpts/
-ModelScope/checkpoint/
-ModelScope/kinetics_middle_img/
-ModelScope/config/v2
+# VADER-ModelScope
+VADER-ModelScope/outputs/
+VADER-ModelScope/media_vis/
+VADER-ModelScope/pretrained_models/
+VADER-ModelScope/wandb/
+VADER-ModelScope/data/
+VADER-ModelScope/__pycache__/
+VADER-ModelScope/media_vis/
+VADER-ModelScope/shan-myout/
+VADER-ModelScope/weights/
+VADER-ModelScope/vader_baselines_ckpts/
+VADER-ModelScope/checkpoint/
+VADER-ModelScope/kinetics_middle_img/
+VADER-ModelScope/config/v2
 
-# VideoCrafter
-VideoCrafter/.DS_Store
-VideoCrafter/.vscode
-VideoCrafter/__pycache__
-VideoCrafter/*.egg-info
-VideoCrafter/checkpoints
-VideoCrafter/results
-VideoCrafter/wandb
-VideoCrafter/project_dir
-VideoCrafter/scripts/evaluation/__pycache__
-VideoCrafter/scripts/lvdm/__pycache__
+# VADER-VideoCrafter
+VADER-VideoCrafter/.DS_Store
+VADER-VideoCrafter/.vscode
+VADER-VideoCrafter/__pycache__
+VADER-VideoCrafter/*.egg-info
+VADER-VideoCrafter/checkpoints
+VADER-VideoCrafter/results
+VADER-VideoCrafter/wandb
+VADER-VideoCrafter/project_dir
+VADER-VideoCrafter/scripts/evaluation/__pycache__
+VADER-VideoCrafter/scripts/lvdm/__pycache__
 
 
 # Byte-compiled / optimized / DLL files
-Open-Sora/__pycache__/
-Open-Sora/scripts/__pycache__
-Open-Sora/opensora/__pycache__
-Open-Sora/*.py[cod]
-Open-Sora/*$py.class
+VADER-Open-Sora/__pycache__/
+VADER-Open-Sora/scripts/__pycache__
+VADER-Open-Sora/opensora/__pycache__
+VADER-Open-Sora/*.py[cod]
+VADER-Open-Sora/*$py.class
 
 # C extensions
-Open-Sora/*.so
+VADER-Open-Sora/*.so
 
 # Distribution / packaging
-Open-Sora/.Python
-Open-Sora/build/
-Open-Sora/develop-eggs/
-Open-Sora/dist/
-Open-Sora/downloads/
-Open-Sora/eggs/
-Open-Sora/.eggs/
-Open-Sora/lib/
-Open-Sora/lib64/
-Open-Sora/parts/
-Open-Sora/sdist/
-Open-Sora/var/
-Open-Sora/wheels/
-Open-Sora/share/python-wheels/
-Open-Sora/*.egg-info/
-Open-Sora/.installed.cfg
-Open-Sora/*.egg
-Open-Sora/MANIFEST
+VADER-Open-Sora/.Python
+VADER-Open-Sora/build/
+VADER-Open-Sora/develop-eggs/
+VADER-Open-Sora/dist/
+VADER-Open-Sora/downloads/
+VADER-Open-Sora/eggs/
+VADER-Open-Sora/.eggs/
+VADER-Open-Sora/lib/
+VADER-Open-Sora/lib64/
+VADER-Open-Sora/parts/
+VADER-Open-Sora/sdist/
+VADER-Open-Sora/var/
+VADER-Open-Sora/wheels/
+VADER-Open-Sora/share/python-wheels/
+VADER-Open-Sora/*.egg-info/
+VADER-Open-Sora/.installed.cfg
+VADER-Open-Sora/*.egg
+VADER-Open-Sora/MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
-Open-Sora/*.manifest
-Open-Sora/*.spec
+VADER-Open-Sora/*.manifest
+VADER-Open-Sora/*.spec
 
 # Installer logs
-Open-Sora/pip-log.txt
-Open-Sora/pip-delete-this-directory.txt
+VADER-Open-Sora/pip-log.txt
+VADER-Open-Sora/pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-Open-Sora/htmlcov/
-Open-Sora/.tox/
-Open-Sora/.nox/
-Open-Sora/.coverage
-Open-Sora/.coverage.*
-Open-Sora/.cache
-Open-Sora/nosetests.xml
-Open-Sora/coverage.xml
-Open-Sora/*.cover
-Open-Sora/*.py,cover
-Open-Sora/.hypothesis/
-Open-Sora/.pytest_cache/
-Open-Sora/cover/
+VADER-Open-Sora/htmlcov/
+VADER-Open-Sora/.tox/
+VADER-Open-Sora/.nox/
+VADER-Open-Sora/.coverage
+VADER-Open-Sora/.coverage.*
+VADER-Open-Sora/.cache
+VADER-Open-Sora/nosetests.xml
+VADER-Open-Sora/coverage.xml
+VADER-Open-Sora/*.cover
+VADER-Open-Sora/*.py,cover
+VADER-Open-Sora/.hypothesis/
+VADER-Open-Sora/.pytest_cache/
+VADER-Open-Sora/cover/
 
 # Translations
-Open-Sora/*.mo
-Open-Sora/*.pot
+VADER-Open-Sora/*.mo
+VADER-Open-Sora/*.pot
 
 # Django stuff:
-Open-Sora/*.log
-Open-Sora/local_settings.py
-Open-Sora/db.sqlite3
-Open-Sora/db.sqlite3-journal
+VADER-Open-Sora/*.log
+VADER-Open-Sora/local_settings.py
+VADER-Open-Sora/db.sqlite3
+VADER-Open-Sora/db.sqlite3-journal
 
 # Flask stuff:
-Open-Sora/instance/
-Open-Sora/.webassets-cache
+VADER-Open-Sora/instance/
+VADER-Open-Sora/.webassets-cache
 
 # Scrapy stuff:
-Open-Sora/.scrapy
+VADER-Open-Sora/.scrapy
 
 # Sphinx documentation
-Open-Sora/docs/_build/
+VADER-Open-Sora/docs/_build/
 
 # PyBuilder
-Open-Sora/.pybuilder/
-Open-Sora/target/
+VADER-Open-Sora/.pybuilder/
+VADER-Open-Sora/target/
 
 # Jupyter Notebook
-Open-Sora/.ipynb_checkpoints
+VADER-Open-Sora/.ipynb_checkpoints
 
 # IPython
-Open-Sora/profile_default/
-Open-Sora/ipython_config.py
+VADER-Open-Sora/profile_default/
+VADER-Open-Sora/ipython_config.py
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
@@ -144,100 +144,100 @@ Open-Sora/ipython_config.py
 #   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
 #   in version control.
 #   https://pdm.fming.dev/#use-with-ide
-Open-Sora/.pdm.toml
+VADER-Open-Sora/.pdm.toml
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-Open-Sora/__pypackages__/
+VADER-Open-Sora/__pypackages__/
 
 # Celery stuff
-Open-Sora/celerybeat-schedule
-Open-Sora/celerybeat.pid
+VADER-Open-Sora/celerybeat-schedule
+VADER-Open-Sora/celerybeat.pid
 
 # SageMath parsed files
-Open-Sora/*.sage.py
+VADER-Open-Sora/*.sage.py
 
 # Environments
-Open-Sora/.env
-Open-Sora/.venv
-Open-Sora/env/
-Open-Sora/venv/
-Open-Sora/ENV/
-Open-Sora/env.bak/
-Open-Sora/venv.bak/
+VADER-Open-Sora/.env
+VADER-Open-Sora/.venv
+VADER-Open-Sora/env/
+VADER-Open-Sora/venv/
+VADER-Open-Sora/ENV/
+VADER-Open-Sora/env.bak/
+VADER-Open-Sora/venv.bak/
 
 
 # Spyder project settings
-Open-Sora/.spyderproject
-Open-Sora/.spyproject
+VADER-Open-Sora/.spyderproject
+VADER-Open-Sora/.spyproject
 
 # Rope project settings
-Open-Sora/.ropeproject
+VADER-Open-Sora/.ropeproject
 
 # mkdocs documentation
-Open-Sora/site
+VADER-Open-Sora/site
 
 # mypy
-Open-Sora/.mypy_cache/
-Open-Sora/.dmypy.json
-Open-Sora/dmypy.json
+VADER-Open-Sora/.mypy_cache/
+VADER-Open-Sora/.dmypy.json
+VADER-Open-Sora/dmypy.json
 
 # Pyre type checker
-Open-Sora/.pyre/
+VADER-Open-Sora/.pyre/
 
 # pytype static type analyzer
-Open-Sora/.pytype/
+VADER-Open-Sora/.pytype/
 
 # Cython debug symbols
-Open-Sora/cython_debug/
+VADER-Open-Sora/cython_debug/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-Open-Sora/.idea/
-Open-Sora/.vscode/
+VADER-Open-Sora/.idea/
+VADER-Open-Sora/.vscode/
 
 # macos
-Open-Sora/*.DS_Store
+VADER-Open-Sora/*.DS_Store
 
 # misc files
-Open-Sora/data/
-Open-Sora/dataset/
-Open-Sora/runs/
-Open-Sora/checkpoints/
-Open-Sora/outputs/
-Open-Sora/outputs
-Open-Sora/samples/
-Open-Sora/samples
-Open-Sora/logs/
-Open-Sora/pretrained_models/
-Open-Sora/pretrained_models
-Open-Sora/evaluation_results/
-Open-Sora/cache/
-Open-Sora/*.swp
+VADER-Open-Sora/data/
+VADER-Open-Sora/dataset/
+VADER-Open-Sora/runs/
+VADER-Open-Sora/checkpoints/
+VADER-Open-Sora/outputs/
+VADER-Open-Sora/outputs
+VADER-Open-Sora/samples/
+VADER-Open-Sora/samples
+VADER-Open-Sora/logs/
+VADER-Open-Sora/pretrained_models/
+VADER-Open-Sora/pretrained_models
+VADER-Open-Sora/evaluation_results/
+VADER-Open-Sora/cache/
+VADER-Open-Sora/*.swp
 
 # Secret files
-Open-Sora/hostfile
-Open-Sora/run.sh
-Open-Sora/gradio_cached_examples/
-Open-Sora/wandb/
+VADER-Open-Sora/hostfile
+VADER-Open-Sora/run.sh
+VADER-Open-Sora/gradio_cached_examples/
+VADER-Open-Sora/wandb/
 
 # vae weights
-Open-Sora/eval/vae/flolpips/weights/
+VADER-Open-Sora/eval/vae/flolpips/weights/
 
 # npm
-Open-Sora/node_modules/
-Open-Sora/package-lock.json
-Open-Sora/package.json
+VADER-Open-Sora/node_modules/
+VADER-Open-Sora/package-lock.json
+VADER-Open-Sora/package.json
 
 # PLLaVA
-Open-Sora/tools/caption/pllava_dir/PLLaVA/
+VADER-Open-Sora/tools/caption/pllava_dir/PLLaVA/
 
 # vbench
-Open-Sora/vbench
-Open-Sora/!eval/vbench
-Open-Sora/vbench2_beta_i2v
+VADER-Open-Sora/vbench
+VADER-Open-Sora/!eval/vbench
+VADER-Open-Sora/vbench2_beta_i2v
 
 # Video files
-Open-Sora/project_dir
+VADER-Open-Sora/project_dir

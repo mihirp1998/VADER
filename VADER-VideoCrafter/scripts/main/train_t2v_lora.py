@@ -37,6 +37,7 @@ import gc
 from PIL import Image
 import io
 import albumentations as A
+from huggingface_hub import snapshot_download
 # import ipdb
 # st = ipdb.set_trace
 
@@ -602,6 +603,12 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
         print(f"+++++++++++++++++++output_dir: {output_dir}+++++++++++++++++++++++++++++++++")
 
     ## ------------------------step 2: model config-----------------------------
+    # download the checkpoint for VideoCrafter2 model
+    ckpt_dir = args.ckpt_path.split('/')    # args.ckpt='checkpoints/base_512_v2/model.ckpt' -> 'checkpoints/base_512_v2'
+    ckpt_dir = '/'.join(ckpt_dir[:-1])
+    snapshot_download(repo_id='VideoCrafter/VideoCrafter2', local_dir =ckpt_dir)
+    
+    # load the model
     config = OmegaConf.load(args.config)
     model_config = config.pop("model", OmegaConf.create())
     model = instantiate_from_config(model_config)
