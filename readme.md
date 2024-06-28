@@ -32,14 +32,13 @@ We have made significant progress towards building foundational video diffusion 
 | <img src="assets/videos/9.gif" width=""> | <img src="assets/videos/1.gif" width=""> | <img src="assets/videos/11.gif" width=""> |
 
 
-## Usage
 
 
-### 🌟 VADER-VideoCrafter
+## 🌟 VADER-VideoCrafter
 
 We **highly recommend** proceeding with the VADER-VideoCrafter model first, which performs better.
 
-#### ⚙️ Installation
+### ⚙️ Installation
 Assuming you are in the `VADER/` directory, you are able to create a Conda environments for VADER-VideoCrafter using the following commands:
 ```bash
 cd VADER-VideoCrafter
@@ -58,7 +57,7 @@ cd ..
 - We are using the pretrained Text-to-Video [VideoCrafter2](https://huggingface.co/VideoCrafter/VideoCrafter2/blob/main/model.ckpt) model via Hugging Face. If you unfortunately find the model is not automatically downloaded when you running inference or training script, you can manually download it and put the `model.ckpt` in `VADER/VADER-VideoCrafter/checkpoints/base_512_v2/model.ckpt`.
 
 
-#### 📺 Inference
+### 📺 Inference
 Assuming you are in the `VADER/` directory, you are able to do inference using the following commands:
 ```bash
 cd VADER-VideoCrafter
@@ -69,7 +68,7 @@ sh scripts/run_text2video_inference.sh
     - Most of the arguments are the same as the training process. The main difference is that `--inference_only` should be set to `True`.
     - `--lora_ckpt_path` is required to set to the path of the pretrained LoRA model. Otherwise, the original VideoCrafter model will be used for inference.
 
-#### 🔧 Training
+### 🔧 Training
 Assuming you are in the `VADER/` directory, you are able to train the model using the following commands:
 
 ```bash
@@ -80,10 +79,9 @@ sh scripts/run_text2video_train.sh
 - `VADER/VADER-VideoCrafter/scripts/main/train_t2v_lora.py` is also a script for fine-tuning the VideoCrafter2 using VADER via LoRA.
     - You can read the VADER-VideoCrafter [documentation](documentation/VADER-VideoCrafter.md) to understand the usage of arguments.
 
----
 
-### 🎬 VADER-Open-Sora
-#### ⚙️ Installation
+## 🎬 VADER-Open-Sora
+### ⚙️ Installation
 ```bash
 cd VADER-Open-Sora
 conda create -n vader_opensora python=3.9
@@ -96,7 +94,7 @@ pip install -e .
 cd ..
 ```
 
-#### 📺 Inference
+### 📺 Inference
 Assuming you are in the `VADER/` directory, you are able to do inference using the following commands:
 ```bash
 cd VADER-Open-Sora
@@ -110,7 +108,7 @@ sh scripts/run_text2video_inference.sh
     - The main difference is that `is_vader_training` should be set to `False`. The `--lora_ckpt_path` should be set to the path of the pretrained LoRA model. Otherwise, the original Open-Sora model will be used for inference.
 
 
-#### 🔧 Training
+### 🔧 Training
 Assuming you are in the `VADER/` directory, you are able to train the model using the following commands:
 
 ```bash
@@ -122,10 +120,9 @@ sh scripts/run_text2video_train.sh
 - `VADER/VADER-Open-Sora/configs/opensora-v1-2/vader/vader_train.py` is the configuration file for training. You can modify the configuration file to change the training settings.
     - You can read the VADER-Open-Sora [documentation](documentation/VADER-Open-Sora.md) to understand the usage of arguments.
 
----
 
-### 🎥 ModelScope
-#### ⚙️ Installation
+## 🎥 ModelScope
+### ⚙️ Installation
 Assuming you are in the `VADER/` directory, you are able to create a Conda environments for VADER-ModelScope using the following commands:
 ```bash
 cd VADER-ModelScope
@@ -139,7 +136,7 @@ cd ..
 rm -r HPSv2
 ```
 
-#### 📺 Inference
+### 📺 Inference
 Assuming you are in the `VADER/` directory, you are able to do inference using the following commands:
 ```bash
 cd VADER-ModelScope
@@ -148,7 +145,7 @@ sh scripts/run_text2video_inference.sh
 
 - Note: we do note set `lora_path` in the original inference script. You can set `lora_path` to the path of the pretrained LoRA model if you have one.
 
-#### 🔧 Training
+### 🔧 Training
 The current code can work on a single GPU with VRAM > 14GBs. The code can be further optimized to work with even lesser VRAM with deepspeed and CPU offloading. For our experiments, we used 4 A100s- 40GB RAM to run our code.
 
 Assuming you are in the `VADER/` directory, you are able to train the model using the following commands:
@@ -180,9 +177,3 @@ If you find this work useful in your research, please cite:
 ```bibtex
 
 ```
-
-<style>
-hr {
- border-style: dashed !important;
-}
-</style>
