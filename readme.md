@@ -204,6 +204,11 @@ val_batch_size=4 \
 lora_path=media_vis/good-voice-252/checkpoint-592/lora 
 ```
 
+## 💡 Tutorial
+This section is to provide a tutorial on how to implement the VADER method on VideoCrafter and Open-Sora by yourself. We will provide a step-by-step guide to help you understand the modification details. Thus, you can easily adapt the VADER method to later versions of VideCrafter.
+- Please refer to the [VideoCrafter tutorial](/VideoCrafter/readme.md)
+- Please refer to the [Open-Sora tutorial](/Open-Sora/readme.md)
+
 
 ## Acknowledgement
 
