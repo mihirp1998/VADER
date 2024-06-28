@@ -21,7 +21,7 @@ We have made significant progress towards building foundational video diffusion 
 ## Usage
 ### 🎬 Open-Sora
 #### 🔧 Training
-For our experiments, we used 4 A100s- 40GB RAM to run our code.
+For our experiments, we used 4 A6000s- 48GB RAM to run our code.
 
 ```bash
 cd Open-Sora
@@ -68,6 +68,71 @@ sh script/run_text2video_inference.sh
 - `Open-Sora/scripts/train_t2v_lora.py` is also a script for do inference via the Open-Sora 1.2 using VADER.
     - Most of the arguments are the same as the training process. The main difference is that `is_vader_training` should be set to `False`. The `--lora_ckpt_path` should be set to the path of the pretrained LoRA model. Otherwise, the original Open-Sora model will be used for inference.
 
+## 💡 Tutorial
+This section is to provide a tutorial on how to implement the VADER method on Open-Sora by yourself. We will provide a step-by-step guide to help you understand the implementation details. Thus, you can easily adapt the VADER method to later versions of Open-Sora or other video generation models. This tutorial is based on the Open-Sora v1.2.0 version.
+
+### Step 1: Install the dependencies
+First, you need to install the dependencies according to the [Open-Sora repository](https://github.com/hpcaitech/Open-Sora). You can follow the instructions in the repository to install the dependencies.
+```bash
+conda create -n opensora python=3.9
+conda activate opensora
+
+# download the repo
+git clone https://github.com/hpcaitech/Open-Sora
+cd Open-Sora
+
+# install torch, torchvision and xformers
+pip install -r requirements/requirements-cu121.txt
+
+# install the Open-Sora package
+pip install -v -e .
+```
+There are a list of extra dependencies that you need to install for VADER. You can install them by running the following command.
+```bash
+pip install albumentations \
+hpsv2 \
+peft \
+bitsandbytes \
+accelerate \
+inflect \
+wandb \
+ipdb \
+pytorch_lightning
+```
+
+### Step 2: Write VADER training script
+You can copy our `VADER/Open-Sora/scripts/train_t2v_lora.py` to the `scripts` directory of Open-Sora, namely `Open-Sora/scripts/`. It is better to copy `run_text2video_train.sh` and `run_text2video_inference.sh` to that directionary as well. Then, you need to copy All the files in `VADER/Core/` and `VADER/assets/` to the parent directory of Open-Sora, which means `Core/`, `assets` and `Open-Sora/` should be in the same directory. You have to also copy the `VADER/Open-Sora/configs/opensora-v1-2/vader/vader_train.py` and `VADER/Open-Sora/configs/opensora-v1-2/vader/vader_inference.py` to one directory of Open-Sora, namely `Open-Sora/configs/opensora-v1-2/vader/`. Now, you may have a directory structure like:
+```bash
+.
+├── Core
+│   ├── ...
+├── Open-Sora
+│   ├── scripts
+│   │   ├── train_t2v_lora.py
+│   ├── configs
+│   │   ├── opensora-v1-2
+│   │   │   ├── vader
+│   │   │   │   ├── vader_train.py
+│   │   │   │   ├── vader_inference.py
+├── assets
+│   ├── ...
+```
+
+### Step 3: Modify the Open-Sora Source Code
+We will let you know which files you need to modify in the Open-Sora source code.
+
+- Modify the function `sample()` in `Open-Sora/opensora/schedulers/rf/__init__.py` as in our implementation in `VADER/Core/schedulers/rf/__init__.py`.
+
+Now you have all the files in the right place and modified the Open-Sora source code. You can run the training script by running the following command.
+```bash
+cd Open-Sora
+
+# training
+sh script/run_text2video_train.sh
+
+# or inference
+sh script/run_text2video_inference.sh
+```
 
 
 ## Acknowledgement

@@ -84,20 +84,20 @@ class RFLOW:
         elif backprop_mode == 'specific':
             backprop_cutoff_idx = 15
         elif backprop_mode == None:
-            backprop_cutoff_idx = self.num_sampling_steps + 1   # no backprop
+            backprop_cutoff_idx = self.num_sampling_steps + 1   # no vader backprop
         else:
             raise ValueError(f"Unknown backprop_mode: {backprop_mode}")
 
 
         for i, t in progress_wrap(enumerate(timesteps)):
 
-
-            if i >= backprop_cutoff_idx:
-                for name, param in model.named_parameters():
-                    if "lora" in name:
-                        param.requires_grad = True
-            else:
-                model.requires_grad_(False)
+            if backprop_mode != None:   # if backprop_mode is None, no vader backprop, so it will not interfere with original opensora code
+                if i >= backprop_cutoff_idx:
+                    for name, param in model.named_parameters():
+                        if "lora" in name:
+                            param.requires_grad = True
+                else:
+                    model.requires_grad_(False)
 
             # mask for adding noise
             if mask is not None:
@@ -115,6 +115,7 @@ class RFLOW:
             # classifier-free guidance
             z_in = torch.cat([z, z], 0)
             t = torch.cat([t, t], 0)
+            # apply gradient checkpointing to save memory during backpropagation
             if use_grad_checkpoint:
                 pred = checkpoint.checkpoint(model, z_in, t, **model_args, use_reentrant=False).chunk(2, dim=1)[0]
             else:

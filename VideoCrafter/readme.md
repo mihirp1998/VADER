@@ -27,7 +27,7 @@ We have made significant progress towards building foundational video diffusion 
 ## Usage
 ### 📀 VideoCrafter
 #### 🔧 Training
-For our experiments, we used 4 A100s- 40GB RAM to run our code.
+For our experiments, we used 4 A6000s- 48GB RAM to run our code.
 
 ```bash
 cd VideoCrafter

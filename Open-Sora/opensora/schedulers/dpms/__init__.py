@@ -1,3 +1,4 @@
+# copied from Open-Sora: https://github.com/hpcaitech/Open-Sora
 from functools import partial
 
 import torch
