@@ -19,9 +19,9 @@ We have made significant progress towards building foundational video diffusion 
 
 
 ## Features
-- [✅] Adaptation of VideoCrafter2 Text-to-Video Model
-- [✅] Adaptation of Open-Sora V1.2 Text-to-Video Model
-- [✅] Adaptation of ModelScope Text-to-Video Model
+- [x] Adaptation of VideoCrafter2 Text-to-Video Model
+- [x] Adaptation of Open-Sora V1.2 Text-to-Video Model
+- [x] Adaptation of ModelScope Text-to-Video Model
 - [ ] Adaptation of Stable Video Diffusion Image2Video Model
 
 ## Demo
