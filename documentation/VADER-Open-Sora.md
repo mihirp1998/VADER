@@ -1,4 +1,6 @@
 # 🎬 VADER-Open-Sora Documentation
+
+## Fine-tuning and Inference
 This document provides a detailed guide on how to use Open-Sora based VADER for fine-tuning and inference.
 
 - `VADER/VADER-Open-Sora/configs/opensora-v1-2/vader/vader_inference.py` is the configuration file for inference. You can modify the configuration file to change the inference settings.
