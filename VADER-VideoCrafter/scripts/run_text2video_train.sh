@@ -18,7 +18,7 @@ accelerate launch --multi_gpu --main_process_port $PORT scripts/main/train_t2v_l
 --ddim_eta 1.0 \
 --frames 12 \
 --prompt_fn 'chatgpt_custom_instruments' \
---gradient_accumulation_steps 16 \
+--gradient_accumulation_steps 8 \
 --num_train_epochs 200 \
 --train_batch_size 1 \
 --val_batch_size 1 \

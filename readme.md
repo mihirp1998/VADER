@@ -84,9 +84,10 @@ sh scripts/run_text2video_train.sh
 ### ⚙️ Installation
 ```bash
 cd VADER-Open-Sora
-conda create -n vader_opensora python=3.9
+conda create -n vader_opensora python=3.10
 conda activate vader_opensora
-pip install -r requirements/requirements-cu121.txt
+conda install pytorch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 pytorch-cuda=12.1 -c pytorch -c nvidia
+conda install xformers -c xformers
 pip install -v -e .
 git clone https://github.com/tgxs002/HPSv2.git
 cd HPSv2/
@@ -131,9 +132,8 @@ conda activate vader_modelscope
 pip install -r requirements.txt
 git clone https://github.com/tgxs002/HPSv2.git
 cd HPSv2/
-pip install .
+pip install -e .
 cd ..
-rm -r HPSv2
 ```
 
 ### 📺 Inference
@@ -162,8 +162,8 @@ sh scripts/run_text2video_train.sh
 
 ## 💡 Tutorial
 This section is to provide a tutorial on how to implement the VADER method on VideoCrafter and Open-Sora by yourself. We will provide a step-by-step guide to help you understand the modification details. Thus, you can easily adapt the VADER method to later versions of VideCrafter.
-- Please refer to the [VideoCrafter tutorial](/VideoCrafter/readme.md)
-- Please refer to the [Open-Sora tutorial](/Open-Sora/readme.md)
+- Please refer to the [VideoCrafter tutorial](/VADER-VideoCrafter/readme.md)
+- Please refer to the [Open-Sora tutorial](/VADER-Open-Sora/readme.md)
 
 
 ## Acknowledgement

@@ -4,6 +4,8 @@
 **/*.png
 **/*.jpg
 **/*.mp4
+HPSv2
+**/HPSv2
 
 # VADER-ModelScope
 VADER-ModelScope/outputs/
