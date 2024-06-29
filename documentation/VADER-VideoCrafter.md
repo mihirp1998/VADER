@@ -1,4 +1,6 @@
 # 🌟 VADER-VideoCrafter Documentation
+
+## Fine-tuning and Inference
 This document provides a detailed guide on how to use VideoCrafter based VADER for fine-tuning and inference.
 
 - `VADER/VADER-VideoCrafter/scripts/main/train_t2v_lora.py` is a script for doing inference via VideoCrafter2 or fine-tuning the VideoCrafter2 using VADER via LoRA.
@@ -29,3 +31,69 @@ This document provides a detailed guide on how to use VideoCrafter based VADER f
     - `--use_AdamW8bit` is set to `True` if you want to use AdamW8bit optimizer.
     - `--inference_only` is set to `False` if you only want to do training. Otherwise, set it to `True` to do inference only.
     - `--backprop_mode` is to control when we gather the gradient during backpropagation in LoRA. It could be `'last'` (gather the gradient only at the last DDIM step), `'rand'` (gather the gradient at a random step of DDIM), and `'specific'` (gather the gradient at the 15th DDIM step).
+
+## Accelerator Configuration
+If you are not familiar with the accelerator configuration, you can refer to the following steps to set up the basic accelerator configuration.
+```bash
+accelerate config
+```
+Then, you can configure the accelerator following the prompts. If you have only one GPU on your machine, you can set as follows:
+```bash
+In which compute environment are you running?
+Please select a choice using the arrow or number keys, and selecting with enter
+➔  This machine
+    AWS (Amazon SageMaker)
+
+
+Which type of machine are you using?
+Please select a choice using the arrow or number keys, and selecting with enter
+➔  No distributed training
+    multi-CPU
+    multi-XPU
+    multi-GPU
+    multi-NPU
+    TPU
+
+Do you want to run your training on CPU only (even if a GPU / Apple Silicon / Ascend NPU device is available)? [yes/NO]:no
+
+Do you wish to optimize your script with torch dynamo?[yes/NO]:no
+
+Do you want to use DeepSpeed? [yes/NO]: no
+
+What GPU(s) (by id) should be used for training on this machine as a comma-seperated list? [all]:all
+
+Do you wish to use FP16 or BF16 (mixed precision)?                                                                                                                                                                   
+Please select a choice using the arrow or number keys, and selecting with enter
+    no                                     
+➔  fp16
+    bf16                                                   
+    fp8
+```
+
+Or, if you have multiple GPUs (let's say 4) on your machine, you can set as follows:
+```bash
+In which compute environment are you running?
+This machine
+
+Which type of machine are you using?
+multi-GPU
+
+How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
+
+Should distributed operations be checked while running for errors? This can avoid timeout issues but will be slower. [yes/NO]: no
+
+Do you wish to optimize your script with torch dynamo?[yes/NO]:no
+
+Do you want to use DeepSpeed? [yes/NO]: no
+
+Do you want to use FullyShardedDataParallel? [yes/NO]: no
+
+Do you want to use Megatron-LM ? [yes/NO]: no
+
+How many GPU(s) should be used for distributed training? [1]:4
+
+What GPU(s) (by id) should be used for training on this machine as a comma-seperated list? [all]:all
+
+Do you wish to use FP16 or BF16 (mixed precision)?
+fp16
+```

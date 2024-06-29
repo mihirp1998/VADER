@@ -1,72 +1,60 @@
 <div align="center">
 
 <!-- TITLE -->
-# **Video Diffusion Alignment via Reward Gradient**
-![VADER](../assets/vader_method.png)
+# 🎬 **VADER-Open-Sora**
 
-[![arXiv](https://img.shields.io/badge/cs.LG-)]()
-[![Website](https://img.shields.io/badge/🌎-Website-blue.svg)](http://vader-vid.github.io)
 </div>
 
-This is the official implementation of our paper [Video Diffusion Alignment via Reward Gradient](https://vader-vid.github.io/) by 
 
-Mihir Prabhudesai*, Russell Mendonca*, Zheyang Qin*, Katerina Fragkiadaki, Deepak Pathak .
-
-
-<!-- DESCRIPTION -->
-## Abstract
-We have made significant progress towards building foundational video diffusion models. As these models are trained using large-scale unsupervised data, it has become crucial to adapt these models to specific downstream tasks, such as video-text alignment or ethical video generation. Adapting these models via supervised fine-tuning requires collecting target datasets of videos, which is challenging and tedious. In this work, we instead utilize pre-trained reward models that are learned via preferences on top of powerful discriminative models. These models contain dense gradient information with respect to generated RGB pixels, which is critical to be able to learn efficiently in complex search spaces, such as videos. We show that our approach can enable alignment of video diffusion for aesthetic generations, similarity between text context and video, as well long horizon video generations that are 3X longer than the training sequence length. We show our approach can learn much more efficiently in terms of reward queries and compute than previous gradient-free approaches for video generation.
-
-
-## Usage
-### 🎬 Open-Sora
-#### 🔧 Training
-For our experiments, we used 4 A6000s- 48GB RAM to run our code.
-
+## ⚙️ Installation
+Assuming you are in the `VADER/` directory, you are able to create a Conda environments for VADER-Open-Sora using the following commands:
 ```bash
-cd Open-Sora
-sh script/run_text2video_train.sh
+cd VADER-Open-Sora
+conda create -n vader_opensora python=3.10
+conda activate vader_opensora
+conda install pytorch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 pytorch-cuda=12.1 -c pytorch -c nvidia
+conda install xformers -c xformers
+pip install -v -e .
+git clone https://github.com/tgxs002/HPSv2.git
+cd HPSv2/
+pip install -e .
+cd ..
 ```
-- `Open-Sora/scripts/train_t2v_lora.py` is a script for fine-tuning the Open-Sora 1.2 using VADER via LoRA.
-    - `--num-frames`, `'--resolution'`, `'fps'` and `'aspect-ratio'` are inherited from the original Open-Sora model. In short, you can set `'--num-frames'` as `'2s'`, `'4s'`, `'8s'`, and `'16s'`. Available resolutions are `'240p'`, `'360p'`, `'480p'`, and `'720p'`. The default value of `'fps'` is `24` and `'aspect-ratio'` is `3:4`. Please refer to the original [Open-Sora](https://github.com/hpcaitech/Open-Sora) repository for more details. One thing to keep in mind, for instance, is that if you set `--num-frames` to `2s` and `--resolution` to `'240p'`, it is better to use `bf16` mixed precision instead of `fp16`. Otherwise, the model may generate noise videos.
+
+## 📺 Inference
+Please run `accelerate config` as the first step to configure accelerator settings. If you are not familiar with the accelerator configuration, you can refer to VADER-Open-Sora [documentation](../documentation/VADER-Open-Sora.md).
+
+Assuming you are in the `VADER/` directory, you are able to do inference using the following commands:
+```bash
+cd VADER-Open-Sora
+sh scripts/run_text2video_inference.sh
+```
+- We have tested on PyTorch 2.3.0 and CUDA 12.1. If the `resolution` is set as `360p`, a GPU with 40GBs of VRAM is required when we set `val_batch_size=1` and use `bf16` mixed precision . It should also work with recent PyTorch and CUDA versions. Please refer to the original [Open-Sora](https://github.com/hpcaitech/Open-Sora) repository for more details about the GPU requirements and the model settings.
+- `VADER/VADER-Open-Sora/scripts/train_t2v_lora.py` is a script for do inference via the Open-Sora 1.2 using VADER.
+    - `--num-frames`, `'--resolution'`, `'fps'` and `'aspect-ratio'` are inherited from the original Open-Sora model. In short, you can set `'--num-frames'` as `'2s'`, `'4s'`, `'8s'`, and `'16s'`. Available values for `--resolution` are `'240p'`, `'360p'`, `'480p'`, and `'720p'`. The default value of `'fps'` is `24` and `'aspect-ratio'` is `3:4`. Please refer to the original [Open-Sora](https://github.com/hpcaitech/Open-Sora) repository for more details. One thing to keep in mind, for instance, is that if you set `--num-frames` to `2s` and `--resolution` to `'240p'`, it is better to use `bf16` mixed precision instead of `fp16`. Otherwise, the model may generate noise videos.
     - `--prompt-path` is the path of the prompt file. Unlike VideoCrafter, we do not provide prompt function for Open-Sora. Instead, you can provide a prompt file, which contains a list of prompts.
     - `--num-processes` is the number of processes for Accelerator. It is recommended to set it to the number of GPUs.
-- `Open-Sora/configs/opensora-v1-2/vader/vader_train.py` is the configuration file for training. You can modify the configuration file to change the training settings.
-    - `is_vader_training` is set to `True` if you want to use VADER for training.
-    - `train_batch_size` is the batch size for training.
-    - `val_batch_size` is the batch size for validation.
-    - `num_val_runs` is the number of validation runs. The total number of validation videos generated will be `num_val_runs * val_batch_size * num_processes`.
-    - `seed` is the random seed.
-    - `lora_ckpt_path` is the path of the pretrained LoRA model. If it is not provided, the model will be initialized from scratch.
-    - `project_dir` is the directory to save the checkpoints and sampled videos.
-    - `lr` is to control the learning rate.
-    - `reward_fn` is the reward function, which can be selected from `'aesthetic'`, `'hps'`, `'aesthetic_hps'`, and `'pick_score'`.`
-    - `gradient_accumulation_steps` can be increased while reducing the `--num_processes` to alleviate bottleneck caused by the number of GPUs.
-    - `--lora_rank` is the rank of LoRA. The larger the value, the more memory is used.
-    - `dtype` is the data type of the model. It could be `'fp16'`, `'bf16'`, `'fp8'`, and `'fp32'`. For instance, it is recommended to use `'bf16'` for `'240p'` and `'360p'`.
-    - `mixed_precision` is set to `'bf16'` as default. You can also set it to `'no'`, `'fp16'` or `'fp8'`.
-    - `'logger_type'` is `'wandb'` as default. You can also set it to `'tensorboard'`.
-    - `--use_wandb` is set to `True` if you want to use wandb to log the training process.
-    - `wandb_entity` is the entity of wandb, whose default value is `''`.
-    - `--validation_steps` is to control the frequency of validation, e.g., `1` means that we will generate validation videos every `1*num_processes` steps.
-    - `--checkpointing_steps` is to control the frequency of saving checkpoints, e.g., `1` means that we will save checkpoints of LoRA model every `1*num_processes` steps.
-    - `debug` is set to `False` as default.
-    - `use_AdamW8bit` is set to `True` if you want to use AdamW8bit optimizer.
-    - `hps_version` is the version of HPS, which can be `'v2.1'` or `'v2.0'`.
-    - `num_train_epochs` is the number of training epochs.
-    - `max_train_steps` is the maximum number of training steps.
-    - `backprop_mode` is to control when we gather the gradient during backpropagation in LoRA. It could be `'last'` (gather the gradient only at the last DDIM step), `'rand'` (gather the gradient at a random step of DDIM), and `'specific'` (gather the gradient at the 15th DDIM step).
-    - `decode_frame` is to control which frame of video to decode in the training process. It could be `'-1'` (a random frame), `'fml'` (first, middle, and last frames), `'all'` (all frames), and `'alt'` (alternate frames). It could also be any number in string type (not int type) like `'3'`, `'10'`, etc. Multiple frames mode can only be used when Actpred reward function is enabled.
-    - `is_sample_preview` is set to `True` if you want to generate and save preview videos.
-    - `grad_checkpoint` is set to `True` if you want to enable gradient checkpointing to save memory.
+- `VADER/VADER-Open-Sora/configs/opensora-v1-2/vader/vader_inferece.py` is the configuration file for inference. You can modify the configuration file to change the inference settings following the guidance in the [documentation](../documentation/VADER-Open-Sora.md).
+    - The main difference is that `is_vader_training` should be set to `False`. The `--lora_ckpt_path` should be set to the path of the pretrained LoRA model. Otherwise, the original Open-Sora model will be used for inference.
 
-#### 📺 Inference
+
+## 🔧 Training
+Please run `accelerate config` as the first step to configure accelerator settings. If you are not familiar with the accelerator configuration, you can refer to VADER-Open-Sora [documentation](../documentation/VADER-Open-Sora.md).
+
+Assuming you are in the `VADER/` directory, you are able to train the model using the following commands:
+
 ```bash
-cd Open-Sora
-sh script/run_text2video_inference.sh
+cd VADER-Open-Sora
+sh scripts/run_text2video_train.sh
 ```
-- `Open-Sora/scripts/train_t2v_lora.py` is also a script for do inference via the Open-Sora 1.2 using VADER.
-    - Most of the arguments are the same as the training process. The main difference is that `is_vader_training` should be set to `False`. The `--lora_ckpt_path` should be set to the path of the pretrained LoRA model. Otherwise, the original Open-Sora model will be used for inference.
+- Our experiments are conducted on PyTorch 2.3.0 and CUDA 12.1 while using 4 A6000s (48GB RAM). It should also work with recent PyTorch and CUDA versions. A GPU with 48GBs of VRAM is required for fine-tuning model when use `bf16` mixed precision as `resolution` is set as `360p` and `num_frames` is set as `2s`.
+- `VADER/VADER-Open-Sora/scripts/train_t2v_lora.py` is a script for fine-tuning the Open-Sora 1.2 using VADER via LoRA.
+    - The arguments are the same as the inference process above.
+- `VADER/VADER-Open-Sora/configs/opensora-v1-2/vader/vader_train.py` is the configuration file for training. You can modify the configuration file to change the training settings.
+    - You can read the VADER-Open-Sora [documentation](../documentation/VADER-Open-Sora.md) to understand the usage of arguments.
+
+
+
 
 ## 💡 Tutorial
 This section is to provide a tutorial on how to implement the VADER method on Open-Sora by yourself. We will provide a step-by-step guide to help you understand the implementation details. Thus, you can easily adapt the VADER method to later versions of Open-Sora or other video generation models. This tutorial is based on the Open-Sora v1.2.0 version.
@@ -74,8 +62,8 @@ This section is to provide a tutorial on how to implement the VADER method on Op
 ### Step 1: Install the dependencies
 First, you need to install the dependencies according to the [Open-Sora](https://github.com/hpcaitech/Open-Sora) repository. You can also follow the instructions in the repository to install the dependencies.
 ```bash
-conda create -n opensora python=3.9
-conda activate opensora
+conda create -n vader_opensora python=3.9
+conda activate vader_opensora
 
 # download the repo
 git clone https://github.com/hpcaitech/Open-Sora
@@ -92,13 +80,11 @@ There are a list of extra dependencies that you need to install for VADER. You c
 # Install the HPS
 git clone https://github.com/tgxs002/HPSv2.git
 cd HPSv2/
-pip install .
+pip install -e .
 cd ..
-rm -r HPSv2
 
 # Install the dependencies
 pip install albumentations \
-hpsv2 \
 peft \
 bitsandbytes \
 accelerate \
@@ -109,7 +95,7 @@ pytorch_lightning
 ```
 
 ### Step 2: Transfer VADER scripts
-You can copy our `VADER/Open-Sora/scripts/train_t2v_lora.py` to the `scripts` directory of Open-Sora, namely `Open-Sora/scripts/`. It is better to copy `run_text2video_train.sh` and `run_text2video_inference.sh` to that directionary as well. Then, you need to copy All the files in `VADER/Core/` and `VADER/assets/` to the parent directory of Open-Sora, which means `Core/`, `assets` and `Open-Sora/` should be in the same directory. You have to also copy the `VADER/Open-Sora/configs/opensora-v1-2/vader/vader_train.py` and `VADER/Open-Sora/configs/opensora-v1-2/vader/vader_inference.py` to one directory of Open-Sora, namely `Open-Sora/configs/opensora-v1-2/vader/`. Now, you may have a directory structure like:
+You can copy our `VADER/VADER-Open-Sora/scripts/train_t2v_lora.py` to the `scripts` directory of Open-Sora, namely `Open-Sora/scripts/`. It is better to copy `run_text2video_train.sh` and `run_text2video_inference.sh` to that directionary as well. Then, you need to copy All the files in `VADER/Core/` and `VADER/assets/` to the parent directory of Open-Sora, which means `Core/`, `assets` and `Open-Sora/` should be in the same directory. You have to also copy the `VADER/VADER-Open-Sora/configs/opensora-v1-2/vader/vader_train.py` and `VADER/VADER-Open-Sora/configs/opensora-v1-2/vader/vader_inference.py` to one directory of Open-Sora, namely `Open-Sora/configs/opensora-v1-2/vader/`. Now, you may have a directory structure like:
 ```bash
 .
 ├── Core
@@ -139,10 +125,10 @@ Now you have all the files in the right place and modified the Open-Sora source 
 cd Open-Sora
 
 # training
-sh script/run_text2video_train.sh
+sh scripts/run_text2video_train.sh
 
 # or inference
-sh script/run_text2video_inference.sh
+sh scripts/run_text2video_inference.sh
 ```
 
 

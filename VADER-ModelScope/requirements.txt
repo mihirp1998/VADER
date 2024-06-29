@@ -89,8 +89,6 @@ sympy==1.12
 timm==0.9.16
 tokenizers==0.13.3
 tomli==2.0.1
-torch==2.2.1
-torchvision==0.17.1
 tqdm==4.66.2
 traitlets==5.14.2
 transformers==4.30.2

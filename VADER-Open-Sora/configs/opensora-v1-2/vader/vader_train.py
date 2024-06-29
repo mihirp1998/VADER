@@ -47,7 +47,7 @@ lora_ckpt_path = None               # path to the pretrained lora checkpoint
 project_dir = "./project_dir"       # project directory, in which checkpoints, and other video files will be saved
 lr = 0.0002                         # learning rate
 reward_fn = "hps"                   # reward function in Open-Sora: ['aesthetic', 'hps', 'aesthetic_hps', 'pick_score']. It does not matter if is_vader_training is False
-gradient_accumulation_steps = 4     
+gradient_accumulation_steps = 8     # number of gradient accumulation steps
 lora_rank = 16                      # rank of the LoRA model, the higher, the larger memory footprint
 
 dtype = "bf16"                      # data type: it suggests to use bf16 for 240p resolution
