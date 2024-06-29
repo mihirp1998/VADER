@@ -150,22 +150,25 @@ cd ..
 ```
 
 ### 📺 Inference
-Please run `accelerate config` as the first step to configure accelerator settings. Assuming you are in the `VADER/` directory, you are able to do inference using the following commands:
+Please run `accelerate config` as the first step to configure accelerator settings. If you are not familiar with the accelerator configuration, you can refer to VADER-ModelScope [documentation](documentation/VADER-ModelScope.md).
+
+Assuming you are in the `VADER/` directory, you are able to do inference using the following commands:
 ```bash
 cd VADER-ModelScope
 sh run_text2video_inference.sh
 ```
-
+- The current code can work on a single GPU with VRAM > 14GBs.
 - Note: we do note set `lora_path` in the original inference script. You can set `lora_path` to the path of the pretrained LoRA model if you have one.
 
 ### 🔧 Training
-The current code can work on a single GPU with VRAM > 14GBs. The code can be further optimized to work with even lesser VRAM with deepspeed and CPU offloading. For our experiments, we used 4 A100s- 40GB RAM to run our code.
+Please run `accelerate config` as the first step to configure accelerator settings. If you are not familiar with the accelerator configuration, you can refer to VADER-ModelScope [documentation](documentation/VADER-ModelScope.md).
 
-Please run `accelerate config` as the first step to configure accelerator settings. Assuming you are in the `VADER/` directory, you are able to train the model using the following commands:
+Assuming you are in the `VADER/` directory, you are able to train the model using the following commands:
 ```bash
 cd VADER-ModelScope
 sh run_text2video_train.sh
 ```
+- The current code can work on a single GPU with VRAM > 14GBs. The code can be further optimized to work with even lesser VRAM with deepspeed and CPU offloading. For our experiments, we used 4 A100s- 40GB RAM to run our code.
 - `VADER/VADER-ModelScope/train_t2v_lora.py` is a script for fine-tuning ModelScope using VADER via LoRA.
     - `gradient_accumulation_steps` can be increased while reducing the `--num_processes` of the accelerator to alleviate bottleneck caused by the number of GPUs. We tested with `gradient_accumulation_steps=4` and `--num_processes=4` on 4 A100s- 40GB RAM.
     - `prompt_fn` is the prompt function, which can be the name of any functions in Core/prompts.py, like `'chatgpt_custom_instruments'`, `'chatgpt_custom_animal_technology'`, `'chatgpt_custom_ice'`, `'nouns_activities'`, etc. Note: If you set `--prompt_fn 'nouns_activities'`, you have to provide`--nouns_file` and `--nouns_file`, which will randomly select a noun and an activity from the files and form them into a single sentence as a prompt.
