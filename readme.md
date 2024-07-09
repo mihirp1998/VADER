@@ -56,6 +56,8 @@ cd ..
 
 - We are using the pretrained Text-to-Video [VideoCrafter2](https://huggingface.co/VideoCrafter/VideoCrafter2/blob/main/model.ckpt) model via Hugging Face. If you unfortunately find the model is not automatically downloaded when you running inference or training script, you can manually download it and put the `model.ckpt` in `VADER/VADER-VideoCrafter/checkpoints/base_512_v2/model.ckpt`.
 
+- We provided pretrained LoRA weights on [HuggingFace](https://huggingface.co/zheyangqin/VADER). The `vader_videocrafter_pickscore.pt` is the model fine-tuned using PickScore function on chatgpt_custom_animal.txt with LoRA rank of 16, while `vader_videocrafter_hps_aesthetic.pt` is the model fine-tuned using a combination of HPSv2.1 and Aesthetic function on chatgpt_custom_instruments.txt with LoRA rank of 8.
+
 
 ### 📺 Inference
 Please run `accelerate config` as the first step to configure accelerator settings. If you are not familiar with the accelerator configuration, you can refer to VADER-VideoCrafter [documentation](documentation/VADER-VideoCrafter.md).
@@ -68,7 +70,7 @@ sh scripts/run_text2video_inference.sh
 - We have tested on PyTorch 2.3.0 and CUDA 12.1. The inferece script works on a single GPU with 16GBs VRAM, when we set `val_batch_size=1` and use `fp16` mixed precision. It should also work with recent PyTorch and CUDA versions.
 - `VADER/VADER-VideoCrafter/scripts/main/train_t2v_lora.py` is a script for inference of the VideoCrafter2 using VADER via LoRA.
     - Most of the arguments are the same as the training process. The main difference is that `--inference_only` should be set to `True`.
-    - `--lora_ckpt_path` is required to set to the path of the pretrained LoRA model. Otherwise, the original VideoCrafter model will be used for inference.
+    - `--lora_ckpt_path` is required to set to the path of the pretrained LoRA model. Specially, if the `lora_ckpt_path` is set to `'huggingface-pickscore'` or `'huggingface-hps-aesthetic'`, it will download the pretrained LoRA model from the [HuggingFace](https://huggingface.co/zheyangqin/VADER) model hub. Otherwise, it will load the pretrained LoRA model from the path you provided. If you do not provide any `lora_ckpt_path`, the original VideoCrafter2 model will be used for inference. Note that if you use `'huggingface-pickscore'` you need to set `--lora_rank 16`, whereas if you use `'huggingface-hps-aesthetic'` you need to set `--lora_rank 8`.
 
 ### 🔧 Training
 Please run `accelerate config` as the first step to configure accelerator settings. If you are not familiar with the accelerator configuration, you can refer to VADER-VideoCrafter [documentation](documentation/VADER-VideoCrafter.md).

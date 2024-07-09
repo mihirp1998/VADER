@@ -1,10 +1,5 @@
-name="base_512_v2"
-
 ckpt='checkpoints/base_512_v2/model.ckpt'
 config='configs/inference_t2v_512_v2.0.yaml'
-
-prompt_file="prompts/test_prompts.txt"
-res_dir="results"
 PORT=$((20000 + RANDOM % 10000))
 
 accelerate launch --multi_gpu --main_process_port $PORT scripts/main/train_t2v_lora.py \
