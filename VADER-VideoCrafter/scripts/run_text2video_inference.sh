@@ -24,4 +24,5 @@ accelerate launch --multi_gpu --main_process_port $PORT scripts/main/train_t2v_l
 --lora_rank 16 \
 --inference_only True \
 --project_dir ./project_dir/inference \
+--lora_ckpt_path huggingface-pickscore \
 --is_sample_preview True

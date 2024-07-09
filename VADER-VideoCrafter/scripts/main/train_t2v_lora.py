@@ -636,6 +636,13 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
 
     # load the pretrained LoRA model
     if args.lora_ckpt_path is not None:
+        if args.lora_ckpt_path == "huggingface-hps-aesthetic":  # download the pretrained LoRA model from huggingface
+            snapshot_download(repo_id='zheyangqin/VADER', local_dir ='checkpoints/pretrained_lora')
+            args.lora_ckpt_path = 'checkpoints/pretrained_lora/vader_videocrafter_hps_aesthetic.pt'
+        elif args.lora_ckpt_path == "huggingface-pickscore":    # download the pretrained LoRA model from huggingface
+            snapshot_download(repo_id='zheyangqin/VADER', local_dir ='checkpoints/pretrained_lora')
+            args.lora_ckpt_path = 'checkpoints/pretrained_lora/vader_videocrafter_pickscore.pt'
+        # load the pretrained LoRA model
         peft.set_peft_model_state_dict(peft_model, torch.load(args.lora_ckpt_path))
     
     # Inference Step: only do inference and save the videos. Skip this step if it is training
