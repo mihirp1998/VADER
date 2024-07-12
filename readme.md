@@ -193,5 +193,13 @@ Our codebase is directly built on top of [VideoCrafter](https://github.com/AILab
 If you find this work useful in your research, please cite:
 
 ```bibtex
-
+@misc{prabhudesai2024videodiffusionalignmentreward,
+      title={Video Diffusion Alignment via Reward Gradients}, 
+      author={Mihir Prabhudesai and Russell Mendonca and Zheyang Qin and Katerina Fragkiadaki and Deepak Pathak},
+      year={2024},
+      eprint={2407.08737},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2407.08737}, 
+}
 ```
