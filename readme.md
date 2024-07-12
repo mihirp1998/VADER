@@ -4,7 +4,7 @@
 # **Video Diffusion Alignment via Reward Gradient**
 ![VADER](assets/vader_method.png)
 
-[![arXiv](https://img.shields.io/badge/cs.LG-arXiv:2407.08737-b31b1b.svg)](https://arxiv.org/abs/2407.08737)
+[![arXiv](https://img.shields.io/badge/cs.CV-arXiv:2407.08737-b31b1b.svg)](https://arxiv.org/abs/2407.08737)
 [![Website](https://img.shields.io/badge/🌎-Website-blue.svg)](http://vader-vid.github.io)
 </div>
 
