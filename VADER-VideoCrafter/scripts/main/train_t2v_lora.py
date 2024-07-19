@@ -58,6 +58,16 @@ def create_output_folders(output_dir, run_name):
     os.makedirs(f"{out_dir}/samples", exist_ok=True)
     return out_dir
 
+# to convert string to boolean in argparse
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 def get_parser():
     parser = argparse.ArgumentParser()
@@ -102,14 +112,14 @@ def get_parser():
     parser.add_argument("--project_dir", type=str, default="./project_dir", help="project directory")
     parser.add_argument("--validation_steps", type=int, default=1, help="The frequency of validation, e.g., 1 means validate every 1*accelerator.num_processes steps")
     parser.add_argument("--checkpointing_steps", type=int, default=1, help="The frequency of checkpointing")
-    parser.add_argument("--use_wandb", type=bool, default=True, help="use wandb for logging")
+    parser.add_argument("--use_wandb", type=str2bool, default=True, help="use wandb for logging")
     parser.add_argument("--wandb_entity", type=str, default="", help="wandb entity")
-    parser.add_argument("--debug", type=bool, default=False, help="debug mode")
+    parser.add_argument("--debug", type=str2bool, default=False, help="debug mode")
     parser.add_argument("--max_grad_norm", type=float, default=1.0, help="max gradient norm")
-    parser.add_argument("--use_AdamW8bit", type=bool, default=False, help="use AdamW8bit optimizer")
-    parser.add_argument("--is_sample_preview", type=bool, default=True, help="sample preview during training")
+    parser.add_argument("--use_AdamW8bit", type=str2bool, default=False, help="use AdamW8bit optimizer")
+    parser.add_argument("--is_sample_preview", type=str2bool, default=True, help="sample preview during training")
     parser.add_argument("--decode_frame", type=str, default="-1", help="decode frame: '-1', 'fml', 'all', 'alt'") # it could also be any number str like '3', '10'. alt: alternate frames, fml: first, middle, last frames, all: all frames. '-1': random frame
-    parser.add_argument("--inference_only", type=bool, default=False, help="only do inference")
+    parser.add_argument("--inference_only", type=str2bool, default=False, help="only do inference")
     parser.add_argument("--lora_ckpt_path", type=str, default=None, help="LoRA checkpoint path")
     parser.add_argument("--lora_rank", type=int, default=8, help="LoRA rank")
 
@@ -559,7 +569,7 @@ def should_sample(global_step, validation_steps, is_sample_preview):
     and is_sample_preview
 
 
-def run_training(args, gpu_num, gpu_no, **kwargs):
+def run_training(args, **kwargs):
     ## ---------------------step 1: accelerator setup---------------------------
     accelerator = Accelerator(                                                  # Initialize Accelerator
         gradient_accumulation_steps=args.gradient_accumulation_steps,
@@ -612,7 +622,7 @@ def run_training(args, gpu_num, gpu_no, **kwargs):
     config = OmegaConf.load(args.config)
     model_config = config.pop("model", OmegaConf.create())
     model = instantiate_from_config(model_config)
-    model = model.cuda(gpu_no)
+
     assert os.path.exists(args.ckpt_path), f"Error: checkpoint [{args.ckpt_path}] Not Found!"
     model = load_model_checkpoint(model, args.ckpt_path)
 
@@ -1081,5 +1091,4 @@ if __name__ == '__main__':
     parser = get_parser()
     args = parser.parse_args()
     seed_everything(args.seed)
-    rank, gpu_num = 0, 1
-    run_training(args, gpu_num, rank)
+    run_training(args)

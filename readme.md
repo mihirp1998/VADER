@@ -6,6 +6,7 @@
 
 [![arXiv](https://img.shields.io/badge/cs.CV-arXiv:2407.08737-b31b1b.svg)](https://arxiv.org/abs/2407.08737)
 [![Website](https://img.shields.io/badge/🌎-Website-blue.svg)](http://vader-vid.github.io)
+[![Demo](https://img.shields.io/badge/%F0%9F%A4%97-Models-yellow)](https://huggingface.co/spaces/zheyangqin/VADER)
 </div>
 
 This is the official implementation of our paper [Video Diffusion Alignment via Reward Gradient](https://vader-vid.github.io/) by 
