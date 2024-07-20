@@ -12,7 +12,7 @@ accelerate launch --multi_gpu --main_process_port $PORT scripts/main/train_t2v_l
 --ddim_steps 25 \
 --ddim_eta 1.0 \
 --frames 24 \
---prompt_fn 'chatgpt_custom_cute' \
+--prompt_fn 'chatgpt_inference' \
 --val_batch_size 1 \
 --num_val_runs 1 \
 --lora_rank 16 \
