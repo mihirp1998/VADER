@@ -146,6 +146,9 @@ def chatgpt_custom_actpred2(nouns_file=None, activities_file=None):
 def chatgpt_custom_instruments_unseen(nouns_file=None, activities_file=None):
     return from_file("chatgpt_custom_instruments_unseen.txt")
 
+def chatgpt_inference(nouns_file=None, activities_file=None):
+    return from_file("chatgpt_inference.txt")
+
 def from_file(path, low=None, high=None, **kwargs):
     prompts = _load_lines(path)[low:high]
     return random.choice(prompts), {}

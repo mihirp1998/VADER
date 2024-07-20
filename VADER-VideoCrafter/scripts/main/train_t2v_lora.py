@@ -646,12 +646,14 @@ def run_training(args, **kwargs):
 
     # load the pretrained LoRA model
     if args.lora_ckpt_path is not None:
-        if args.lora_ckpt_path == "huggingface-hps-aesthetic":  # download the pretrained LoRA model from huggingface
-            snapshot_download(repo_id='zheyangqin/VADER', local_dir ='checkpoints/pretrained_lora')
-            args.lora_ckpt_path = 'checkpoints/pretrained_lora/vader_videocrafter_hps_aesthetic.pt'
-        elif args.lora_ckpt_path == "huggingface-pickscore":    # download the pretrained LoRA model from huggingface
-            snapshot_download(repo_id='zheyangqin/VADER', local_dir ='checkpoints/pretrained_lora')
-            args.lora_ckpt_path = 'checkpoints/pretrained_lora/vader_videocrafter_pickscore.pt'
+        if args.lora_ckpt_path == "huggingface-pickscore":  # download the pretrained LoRA model from huggingface
+            os.makedirs('checkpoints/pretrained_lora_pickScore', exist_ok=True)
+            snapshot_download(repo_id='zheyangqin/VADER_VideoCrafter_PickScore', local_dir ='checkpoints/pretrained_lora_pickScore')
+            args.lora_ckpt_path = 'checkpoints/pretrained_lora_pickScore/vader_videocrafter_pickscore.pt'
+        elif args.lora_ckpt_path == "huggingface-hps-aesthetic":    # download the pretrained LoRA model from huggingface
+            os.makedirs('checkpoints/pretrained_lora_hps_aesthetic', exist_ok=True)
+            snapshot_download(repo_id='zheyangqin/VADER_VideoCrafter_HPS_Aesthetic', local_dir ='checkpoints/pretrained_lora_hps_aesthetic')
+            args.lora_ckpt_path = 'checkpoints/pretrained_lora_hps_aesthetic/vader_videocrafter_hps_aesthetic.pt'
         # load the pretrained LoRA model
         peft.set_peft_model_state_dict(peft_model, torch.load(args.lora_ckpt_path))
     
