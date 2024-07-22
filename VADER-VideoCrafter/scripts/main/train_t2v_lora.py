@@ -987,10 +987,11 @@ def run_training(args, **kwargs):
                                     video_path = os.path.join(dir_name, f"{filename}.mp4")
                                     vis_dict[f"train_sample_{i}"] = wandb.Video(video_path, fps=args.savefps, caption=prompts[i])
                         else:
-                            # save as image
-                            train_gen_frames = Image.fromarray((((video_frames_ + 1.0)/2.0)[0].permute(1,2,0).detach().cpu().clamp(0, 1).numpy() * 255).astype(np.uint8))
-                            gen_image = wandb.Image(train_gen_frames, caption=prompts[0])
-                            vis_dict["gen image (train)"] = gen_image
+                            if args.use_wandb:
+                                # save as image
+                                train_gen_frames = Image.fromarray((((video_frames_ + 1.0)/2.0)[0].permute(1,2,0).detach().cpu().clamp(0, 1).numpy() * 255).astype(np.uint8))
+                                gen_image = wandb.Image(train_gen_frames, caption=prompts[0])
+                                vis_dict["gen image (train)"] = gen_image
 
                     accelerator.log(vis_dict, step=global_step)
                     logger.info("Training sample saved!")
