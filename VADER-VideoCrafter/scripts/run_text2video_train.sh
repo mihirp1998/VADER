@@ -24,5 +24,6 @@ accelerate launch --multi_gpu --main_process_port $PORT scripts/main/train_t2v_l
 --lr 0.0002 \
 --validation_steps 10 \
 --lora_rank 16 \
+--max_train_steps 450 \
 --is_sample_preview True
 
