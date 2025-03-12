@@ -753,7 +753,6 @@ def main(opt):
                 progress_bar.update(1)
                 if global_step % checkpointing_steps ==0:   
                     print("Saving checkpointing....")
-                    # st()
                     save_pipe(
                         opt.pretrained_model_path, 
                         global_step, 
@@ -768,7 +767,6 @@ def main(opt):
                         is_checkpoint=True,
                         save_pretrained_model=False
                     )
-                    # st()
                     print("Saving checkpoing end")
                 
                 if global_step % opt.gradient_accumulation_steps == 0:

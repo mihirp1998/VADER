@@ -11,7 +11,7 @@
 
 This is the official implementation of our paper [Video Diffusion Alignment via Reward Gradient](https://vader-vid.github.io/) by 
 
-Mihir Prabhudesai*, Russell Mendonca*, Zheyang Qin*, Katerina Fragkiadaki, Deepak Pathak .
+Mihir Prabhudesai*, Zheyang Qin*, Russell Mendonca*, Katerina Fragkiadaki, Deepak Pathak .
 
 
 <!-- DESCRIPTION -->
@@ -23,6 +23,7 @@ We have made significant progress towards building foundational video diffusion 
 - [x] Adaptation of VideoCrafter2 Text-to-Video Model
 - [x] Adaptation of Open-Sora V1.2 Text-to-Video Model
 - [x] Adaptation of ModelScope Text-to-Video Model
+- [x] DPO and DDPO Baselines
 - [ ] Adaptation of Stable Video Diffusion Image2Video Model
 - [ ] Movie generation code
 
@@ -145,8 +146,7 @@ Assuming you are in the `VADER/` directory, you are able to create a Conda envir
 cd VADER-ModelScope
 conda create -n vader_modelscope python=3.10
 conda activate vader_modelscope
-conda install pytorch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 pytorch-cuda=12.1 -c pytorch -c nvidia
-conda install xformers -c xformers
+pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0
 pip install -r requirements.txt
 git clone https://github.com/tgxs002/HPSv2.git
 cd HPSv2/
@@ -180,6 +180,21 @@ sh run_text2video_train.sh
     - `reward_fn` is the reward function, which can be selected from `'aesthetic'`, `'hps'`, and `'actpred'`.
 - `VADER/VADER-ModelScope/config_t2v/config.yaml` is the configuration file for training. You can modify the configuration file to change the training settings following the comments in that file.
 
+### 🎯 DPO and DDPO Baselines
+Please run `accelerate config` as the first step to configure accelerator settings. If you are not familiar with the accelerator configuration, you can refer to VADER-ModelScope [documentation](documentation/VADER-ModelScope.md).
+
+Assuming you are in the `VADER/` directory:
+- You are able to run DPO traning script using the following commands:
+```bash
+cd VADER-ModelScope
+sh run_t2vid_dpo_train.sh
+```
+
+- You are able to run DDPO traning script using the following commands:
+```bash
+cd VADER-ModelScope
+sh run_t2vid_ddpo_train.sh
+```
 
 ## 💡 Tutorial
 This section is to provide a tutorial on how to implement the VADER method on VideoCrafter and Open-Sora by yourself. We will provide a step-by-step guide to help you understand the modification details. Thus, you can easily adapt the VADER method to later versions of VideCrafter.

@@ -124,7 +124,7 @@ class CustomT2V(TextToVideoSDPipeline):
         width = width or self.unet.config.sample_size * self.vae_scale_factor
 
         num_images_per_prompt = 1
-        # st()
+
         # 1. Check inputs. Raise error if not correct
         self.check_inputs(
             prompt, height, width, callback_steps, negative_prompt, prompt_embeds, negative_prompt_embeds
@@ -198,17 +198,13 @@ class CustomT2V(TextToVideoSDPipeline):
                 backprop_cutoff_idx = 15
             
             #backprop_cutoff_idx = 0
-            # print('backprop_cutoff_idx', backprop_cutoff_idx)   
             for i, t in enumerate(timesteps):
                 # expand the latents if we are doing classifier free guidance
                 latent_model_input = torch.cat([latents] * 2) if do_classifier_free_guidance else latents
                 latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 
                 # predict the noise residual   
-                # st()
-                if i >= backprop_cutoff_idx: 
-                    # print(i)      
-                    # st()             
+                if i >= backprop_cutoff_idx:         
                     for name,param in  self.unet.named_parameters():
                         if "lora" in name:
                             param.requires_grad = True
@@ -217,8 +213,6 @@ class CustomT2V(TextToVideoSDPipeline):
                     self.unet.requires_grad_(False)
                 
                 forward_context = torch.autograd.graph.save_on_cpu if i < cpu_step_cutoff else contextlib.nullcontext
-                
-                # forward_context = torch.autograd.graph.save_on_cpu if i < cpu_step_cutoff else contextlib.nullcontext
                 
                 
                 with forward_context():
@@ -232,7 +226,6 @@ class CustomT2V(TextToVideoSDPipeline):
 
 
                 # perform guidance
-                # st()
                 if do_classifier_free_guidance:
                     noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
                     noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
@@ -244,7 +237,6 @@ class CustomT2V(TextToVideoSDPipeline):
                 noise_pred = noise_pred.permute(0, 2, 1, 3, 4).reshape(bsz* frames, channel, width, height)
 
                 if decode_og and i == backprop_cutoff_idx:
-                    # st()
                     latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs).pred_original_sample
                     latents = latents[None, :].reshape(bsz, frames, channel, width, height).permute(0, 2, 1, 3, 4)
                     break
@@ -263,7 +255,6 @@ class CustomT2V(TextToVideoSDPipeline):
         
         if output_type == "latent":
             return TextToVideoSDPipelineOutput(frames=latents)
-        # st()
 
         if type(decode_frame) == int:
             frame_index = random.randint(0,latents.shape[2]-1) if decode_frame == -1 else decode_frame
@@ -275,7 +266,6 @@ class CustomT2V(TextToVideoSDPipeline):
         
         # Offload all models
         self.maybe_free_model_hooks()
-        # st()
         return frames
     
     def prepare_latents(

@@ -11,8 +11,7 @@ Assuming you are in the `VADER/` directory, you are able to create a Conda envir
 cd VADER-ModelScope
 conda create -n vader_modelscope python=3.10
 conda activate vader_modelscope
-conda install pytorch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 pytorch-cuda=12.1 -c pytorch -c nvidia
-conda install xformers -c xformers
+pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0
 pip install -r requirements.txt
 git clone https://github.com/tgxs002/HPSv2.git
 cd HPSv2/
@@ -44,6 +43,21 @@ sh run_text2video_train.sh
 - `VADER/VADER-ModelScope/config_t2v/config.yaml` is the configuration file for training. You can modify the configuration file to change the training settings following the comments in that file.
 
 
+## 🎯 DPO and DDPO Baselines
+Please run `accelerate config` as the first step to configure accelerator settings. If you are not familiar with the accelerator configuration, you can refer to VADER-ModelScope [documentation](documentation/VADER-ModelScope.md).
+
+Assuming you are in the `VADER/` directory:
+- You are able to run DPO traning script using the following commands:
+```bash
+cd VADER-ModelScope
+sh run_t2vid_dpo_train.sh
+```
+
+- You are able to run DDPO traning script using the following commands:
+```bash
+cd VADER-ModelScope
+sh run_t2vid_ddpo_train.sh
+```
 ## Acknowledgement
 
 Our codebase is directly built on top of [VideoCrafter](https://github.com/AILab-CVC/VideoCrafter), [Open-Sora](https://github.com/hpcaitech/Open-Sora), and [Animate Anything](https://github.com/alibaba/animate-anything/). We would like to thank the authors for open-sourcing their code.
